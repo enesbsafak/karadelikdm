@@ -19,8 +19,10 @@ struct Browser {
     id: &'static str,
     name: &'static str,
     /// Windows'ta App Paths kaydındaki çalıştırılabilir ad
+    #[cfg_attr(not(windows), allow(dead_code))]
     exe: &'static str,
     /// macOS uygulama paketi
+    #[cfg_attr(windows, allow(dead_code))]
     mac_app: &'static str,
     store: Option<&'static str>,
     /// Elle kurulumda uzantılar sayfası
@@ -82,8 +84,7 @@ fn find(b: &Browser) -> Option<PathBuf> {
     p.exists().then_some(p)
 }
 
-fn open_in(b: &Browser, exe: &Path, url: &str) -> std::io::Result<()> {
-    let _ = b.mac_app;
+fn open_in(exe: &Path, url: &str) -> std::io::Result<()> {
     #[cfg(windows)]
     {
         std::process::Command::new(exe).arg(url).spawn()?;
@@ -142,7 +143,7 @@ pub fn ext_install(browser: String) -> Res<InstallResult> {
         "store" => {
             let exe = find(b).ok_or("tarayıcı bulunamadı")?;
             let url = b.store.unwrap_or_default();
-            open_in(b, &exe, url).map_err(|e| e.to_string())?;
+            open_in(&exe, url).map_err(|e| e.to_string())?;
             Ok(InstallResult { mode: "store", path: String::new(), page: url.to_string() })
         }
         "manual" => {
