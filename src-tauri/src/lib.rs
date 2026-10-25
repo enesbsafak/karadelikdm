@@ -154,6 +154,16 @@ pub fn run() {
         if let RunEvent::Reopen { .. } = event {
             windows::show_main();
         }
+        // macOS: Finder'dan .torrent ya da tarayıcıdan magnet bağlantısı (Info.plist'teki kayıtlar)
+        #[cfg(target_os = "macos")]
+        if let RunEvent::Opened { urls } = &event {
+            let argv = cli::opened_to_argv(urls);
+            std::thread::spawn(move || {
+                // Uygulama bu olayla açıldıysa ana pencere hazır olsun
+                std::thread::sleep(Duration::from_millis(300));
+                cli::handle(&argv);
+            });
+        }
         if let RunEvent::Exit = event {
             kcore::persist_runtime_state();
             kcore::engine().shutdown(Duration::from_secs(3));

@@ -149,10 +149,11 @@ For older scripts `/d URL /p FOLDER /f NAME /n` (start now) and `/a` (add to que
   does, and our extension never gets a chance. Turn off IDM's browser integration if you use both.
 - BitTorrent: only BitTorrent v1 (`btih`); v2-only (`btmh`) magnet links do not open. No protocol encryption
   (MSE/PE). Per-download speed limits do not apply to torrents (the global limit does). Seeding continues only while
-  the app is open. Web seeding works per file and starts only when peers make no progress. No magnet / `.torrent`
-  association on macOS yet.
-- The macOS build has not been tested yet. Cross-compiling it on Windows is not possible either (C dependencies need
-  Apple SDK headers); `.github/workflows/ci.yml` builds and tests on macOS on every push.
+  the app is open. Web seeding works per file and starts only when peers make no progress. On macOS the app is
+  registered as an "Open With" choice for magnet links and `.torrent` files, not as the default.
+- macOS: the build, clippy and the whole test suite run and pass on macOS in CI (`.github/workflows/ci.yml`) on every
+  push; the app window, tray and browser extension have not been tried by hand on a Mac. Cross-compiling on Windows
+  is not possible (C dependencies need Apple SDK headers).
 
 ## Building from source
 

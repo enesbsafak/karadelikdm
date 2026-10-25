@@ -45,6 +45,19 @@ pub fn parse(argv: &[String]) -> Args {
     a
 }
 
+/// macOS'un "bununla aç" olayındaki adresleri komut satırı biçimine çevirir: `file://` yol olur, magnet aynen kalır.
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+pub fn opened_to_argv(urls: &[url::Url]) -> Vec<String> {
+    let items = urls.iter().filter_map(|u| {
+        if u.scheme() == "file" {
+            u.to_file_path().ok().map(|p| p.to_string_lossy().into_owned())
+        } else {
+            Some(u.to_string())
+        }
+    });
+    std::iter::once(String::new()).chain(items).collect()
+}
+
 /// Argümanlarda indirme varsa işler. `true`: bir şey yapıldı.
 pub fn handle(argv: &[String]) -> bool {
     let a = parse(argv);
@@ -83,5 +96,15 @@ mod tests {
         assert!(parse(&v(&["--autostart"])).minimized);
         let t = parse(&v(&["magnet:?xt=urn:btih:abc", r"C:\a b\x.torrent", "notes.txt"]));
         assert_eq!(t.urls, vec!["magnet:?xt=urn:btih:abc", r"C:\a b\x.torrent"]);
+    }
+
+    #[test]
+    fn opened_urls_become_arguments() {
+        let file = if cfg!(windows) { "file:///C:/Users/a%20b/film.torrent" } else { "file:///Users/a%20b/film.torrent" };
+        let magnet = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567&dn=x";
+        let urls: Vec<url::Url> = [file, magnet].iter().map(|u| url::Url::parse(u).unwrap()).collect();
+        let a = parse(&opened_to_argv(&urls));
+        let want_path = if cfg!(windows) { r"C:\Users\a b\film.torrent" } else { "/Users/a b/film.torrent" };
+        assert_eq!(a.urls, vec![want_path.to_string(), magnet.to_string()]);
     }
 }

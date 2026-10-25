@@ -143,9 +143,10 @@ Eski betikler için `/d ADRES /p KLASÖR /f AD /n` (hemen başlat) ve `/a` (kuyr
 - BitTorrent: yalnız BitTorrent v1 (`btih`) desteklenir; v2'ye özgü (`btmh`) magnet bağlantıları açılmaz. Protokol
   şifrelemesi (MSE/PE) yok. Torrentlere indirme başına hız sınırı uygulanmaz (genel sınır uygulanır). Paylaşma
   yalnız uygulama açıkken sürer. Web seed dosya bazlıdır ve yalnız eşlerden ilerleme olmayınca devreye girer.
-  macOS'ta magnet / `.torrent` ilişkilendirmesi henüz yok.
-- macOS derlemesi henüz test edilmedi. Bu Windows makinede çapraz derleme de mümkün değil (C bağımlılıkları Apple SDK
-  başlıklarını ister); `.github/workflows/ci.yml` her itmede macOS'ta derleyip testleri çalıştırır.
+  macOS'ta uygulama magnet ve `.torrent` için "birlikte aç" seçeneği olarak kayıtlıdır, varsayılan olmaz.
+- macOS: derleme, clippy ve bütün testler CI'da (`.github/workflows/ci.yml`) her itmede macOS'ta çalışır ve geçer;
+  uygulama penceresi, tepsi ve tarayıcı uzantısı bir Mac'te elle denenmedi. Bu Windows makinede çapraz derleme mümkün
+  değil (C bağımlılıkları Apple SDK başlıklarını ister).
 
 ## Kaynaktan derleme
 
