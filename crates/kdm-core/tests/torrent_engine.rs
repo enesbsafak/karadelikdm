@@ -181,8 +181,20 @@ fn torrent_file_with_selection_existing_name_and_resume() {
 
 #[test]
 fn stopped_magnet_without_peers_returns_quickly() {
-    // Yanıt vermeyen bir eş: metadata hiç gelmez, indirme "bilgiler alınıyor" durumunda bekler
-    let e = env("stop", vec![SocketAddr::from(([127, 0, 0, 1], 9))], 0.0);
+    // Bağlantıyı kabul edip hiç yanıt vermeyen bir eş: metadata hiç gelmez, indirme "bilgiler alınıyor" durumunda
+    // bekler. (Kapalı port olmaz: macOS reddi anında bildirir, eş listesi tükenir ve librqbit hemen vazgeçer.)
+    let silent = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let silent_addr = silent.local_addr().unwrap();
+    let held = std::sync::Arc::new(parking_lot::Mutex::new(Vec::new()));
+    {
+        let held = held.clone();
+        std::thread::spawn(move || {
+            for s in silent.incoming().flatten() {
+                held.lock().push(s);
+            }
+        });
+    }
+    let e = env("stop", vec![silent_addr], 0.0);
     let magnet = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567&dn=yok";
     let id = e.engine.add(NewDownload { url: magnet.into(), start: true, ..Default::default() }, e.out.clone(), "").unwrap();
     std::thread::sleep(Duration::from_millis(800));

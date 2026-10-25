@@ -18,11 +18,13 @@ const store = (init = {}) => {
 // Uygulama bağlantısı ön elemeden sonra kurulur; ön eleme son bilinen ayarı depodan okur
 const CONFIG = { enabled: true, exts: ['bin', 'deb'], min_size_kb: 0 };
 // Canlı tutma ve yeniden bağlanma zamanlayıcıları test sürecini açık tutmasın
+// (Kısa zamanlayıcılar dokunulmadan kalır: sahte WebSocket'in yanıtları onlarla gelir; işaretlenirse süreç yanıtlar
+// gelmeden kapanabilir.)
 for (const name of ['setTimeout', 'setInterval']) {
   const orig = globalThis[name];
-  globalThis[name] = (...a) => {
-    const t = orig(...a);
-    t.unref?.();
+  globalThis[name] = (fn, ms, ...rest) => {
+    const t = orig(fn, ms, ...rest);
+    if (name === 'setInterval' || ms >= 1000) t.unref?.();
     return t;
   };
 }
