@@ -102,7 +102,9 @@ BitTorrent'in doğası gereği, torrent indirirken IP adresiniz bağlandığın�
    Kurulum kullanıcı başınadır, yönetici izni gerekmez.
 2. Tarayıcı uzantısı (Chrome Web Store, Edge Eklentileri ve Firefox mağazalarına gönderilmek üzere; onaylanana
    kadar elle kurulur):
-   - **Chrome / Edge:** Sürüm sayfasındaki `karadelikdm-extension-chromium-unpacked.zip`'i bir klasöre açın,
+   - **En kolayı:** Uygulamada Tercihler > Tarayıcı > "Uzantıyı kur". Uzantı klasörü hazırlanır, yolu panoya
+     kopyalanır ve adımlar gösterilir; bağlanınca "Bağlı" yazar.
+   - **Chrome / Edge, elle:** Sürüm sayfasındaki `karadelikdm-extension-chromium-unpacked.zip`'i bir klasöre açın,
      `chrome://extensions` (Edge'de `edge://extensions`) → Geliştirici modu → "Paketlenmemiş öğe yükle" →
      `karadelikdm-chromium` klasörü. Klasörü silmeyin; tarayıcı uzantıyı oradan çalıştırır.
    - **Firefox:** mağaza onayına kadar yalnız geçici olarak: `about:debugging` → "Geçici eklenti yükle" →

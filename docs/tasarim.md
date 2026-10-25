@@ -182,6 +182,16 @@ Belgenin ilk hali yazılırken öngörülmeyen, uygulama ve testlerde ortaya ç�
   - Torrent oturumu tembel açılır; UPnP varsayılan kapalı; magnet/.torrent ilişkilendirmesi Windows'ta yalnız
     kullanıcı isteyince yazılır ve kaldırıcı yalnız bu kuruluma işaret eden kaydı siler. macOS'ta uygulama
     "Birlikte Aç" seçeneği olarak kaydolur, varsayılan olmaz.
+- **Uzantıyı uygulamadan kurma** (`src-tauri/src/extinstall.rs`): tarayıcılar uzantının sessizce kurulmasına izin
+  vermez ve komut satırından verilen `chrome://` / `edge://` adreslerini yok sayar (denendi: yeni sekme açılıyor).
+  Bu yüzden mağazada yayınlanmış tarayıcıda mağaza sayfası o tarayıcıda açılır; yayınlanmamışta (Chrome/Edge)
+  uygulamayla gelen paketlenmemiş uzantı (`bundle.resources`) veri klasörüne çıkarılır, yolu panoya kopyalanır ve
+  adımlar gösterilir. Bağlantı durumu köprüdeki doğrulanmış istemci sayısından okunur. Chrome Web Store sayfaları
+  hiçbir uzantıya açık değildir; mağaza yüklemesi tarayıcı otomasyonuyla yapılamaz.
+- **Kaldırıcı kurulum klasörü kaydını siler:** NSIS kurulum klasörünü `HKCU\Software\enesbsafak\Karadelik Download
+  Manager`'da tutuyordu ve kaldırıcı bunu silmiyordu; farklı klasöre kurulup kaldırılan uygulamanın yeniden kurulumu
+  silinmiş eski klasörü varsayılan alıyordu (gerçekte yaşandı). Kaldırma (güncelleme değil) artık bu kaydı siler; CI'daki
+  `installer` işi temiz bir Windows'ta kur → denetle → kaldır → kayıtlar silindi mi akışını sınar.
 - **Arayüz** (2026-10-25): Renkler ve `app.css` (KaradelikDev ile ortak dosya) korunarak `dm.css` ve ana pencere
   Apple'ın masaüstü diliyle yeniden yazıldı: tek parça başlık/araç çubuğu ve simge düğmeler, kategori ve kuyrukları
   gösteren kenar çubuğu, liste başlığında durum için bölmeli denetim ve sıralama, tablo yerine iki satırlı ve satır

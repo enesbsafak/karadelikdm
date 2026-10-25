@@ -112,6 +112,11 @@ impl Server {
         self.shared.clients.lock().unwrap().retain(|_, tx| tx.send(msg.clone()).is_ok());
     }
 
+    /// Şu an bağlı ve kimliği doğrulanmış uzantı sayısı.
+    pub fn client_count(&self) -> usize {
+        self.shared.clients.lock().unwrap().len()
+    }
+
     pub fn stop(mut self) {
         self.shutdown();
     }
@@ -669,6 +674,21 @@ mod tests {
         let r = recv(&mut ws);
         assert_eq!(r["type"], "config");
         assert_eq!(r["config"]["min_size_kb"], 100);
+    }
+
+    #[test]
+    fn client_count_follows_connections() {
+        let (srv, _, _) = setup();
+        assert_eq!(srv.client_count(), 0);
+        let ws = authed(&srv);
+        assert_eq!(srv.client_count(), 1);
+        drop(ws);
+        // Kopan bağlantı okuma döngüsü bitince listeden çıkar
+        let t = std::time::Instant::now();
+        while srv.client_count() != 0 && t.elapsed() < std::time::Duration::from_secs(5) {
+            std::thread::sleep(std::time::Duration::from_millis(50));
+        }
+        assert_eq!(srv.client_count(), 0);
     }
 
     #[test]

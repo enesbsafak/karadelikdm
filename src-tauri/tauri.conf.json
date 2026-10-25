@@ -58,6 +58,9 @@
       "icons/icon.ico",
       "icons/icon.icns"
     ],
+    "resources": {
+      "../extension/chromium/": "extension/chromium"
+    },
     "externalBin": [
       "binaries/karadelikdm-nmh"
     ]

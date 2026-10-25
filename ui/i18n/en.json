@@ -143,7 +143,6 @@
   "prefs.connections_hint": "A download starts with one connection and grows up to this number if the server allows it.",
   "prefs.data_dir": "Data folder: {0}",
   "prefs.download_dir": "Download folder",
-  "prefs.extension_hint": "The browser extension is installed separately for Chrome, Edge and Firefox.",
   "prefs.extensions": "Extensions",
   "prefs.ffmpeg_hint": "Used to merge HLS/DASH streams into a single MP4 (no re-encoding). Enter \"none\" to disable; streams then stay as .ts or separate audio/video files.",
   "prefs.ffmpeg_ph": "Empty: searched in PATH",
@@ -313,5 +312,18 @@
   "ui.sort": "Sort by",
   "ui.sort_dir": "Reverse order",
   "ui.sidebar": "Sidebar",
-  "ui.details": "Details"
+  "ui.details": "Details",
+  "prefs.ext_title": "Browser extension",
+  "prefs.ext_connected": "Connected",
+  "prefs.ext_not_connected": "Not connected",
+  "prefs.ext_not_found": "Not installed",
+  "prefs.ext_add_store": "Add from store",
+  "prefs.ext_install": "Install extension",
+  "prefs.ext_after_store": "After store approval",
+  "prefs.ext_step1": "Type in the browser's address bar:",
+  "prefs.ext_step2": "Turn on \"Developer mode\" at the top right.",
+  "prefs.ext_step3": "Click \"Load unpacked\".",
+  "prefs.ext_step4": "In the window that opens, paste into its address bar (Ctrl+V) and select the folder. The path has been copied:",
+  "prefs.ext_copy": "Copy",
+  "prefs.ext_keep": "Keep this folder; the browser runs the extension from it. Once the extension is in the store, this button will open the store page."
 }

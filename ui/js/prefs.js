@@ -73,6 +73,41 @@ function collect() {
   return out;
 }
 
+// ---------- uzantı kurulumu ----------
+async function renderExt() {
+  let st;
+  try { st = await invoke('ext_status'); } catch { return; }
+  const state = $('extState');
+  state.textContent = st.connected ? T('prefs.ext_connected') : T('prefs.ext_not_connected');
+  state.classList.toggle('on', st.connected);
+  const list = $('extList');
+  list.textContent = '';
+  for (const b of st.browsers) {
+    const label = !b.found ? T('prefs.ext_not_found') : b.mode === 'store' ? T('prefs.ext_add_store') : b.mode === 'manual' ? T('prefs.ext_install') : T('prefs.ext_after_store');
+    const btn = el('button', { class: `btn${b.found && b.mode !== 'unavailable' ? ' primary' : ''}`, type: 'button' }, label);
+    btn.disabled = !b.found || b.mode === 'unavailable';
+    btn.addEventListener('click', () => installExt(b.id));
+    list.append(el('div', { class: 'ext-row' }, el('span', { class: 'name' }, b.name), btn));
+  }
+}
+
+async function installExt(id) {
+  $('error').classList.add('hidden');
+  try {
+    const r = await invoke('ext_install', { browser: id });
+    if (r.mode === 'manual') {
+      $('extPage').textContent = r.page;
+      $('extPath').textContent = r.path;
+      $('extSteps').classList.remove('hidden');
+      await navigator.clipboard.writeText(r.path).catch(() => {});
+    }
+  } catch (e) {
+    const er = $('error');
+    er.textContent = String(e);
+    er.classList.remove('hidden');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   await loadI18n();
   meta = await invoke('settings_get');
@@ -89,6 +124,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('resetExts').addEventListener('click', (e) => { e.preventDefault(); $('capture_exts').value = meta.default_capture; });
   $('resetAv').addEventListener('click', (e) => { e.preventDefault(); $('av_command').value = meta.default_av; });
   $('cancel').addEventListener('click', () => currentWindow().close());
+  renderExt();
+  setInterval(renderExt, 3000);
+  $('copyPage').addEventListener('click', () => navigator.clipboard.writeText($('extPage').textContent).catch(() => {}));
+  $('copyPath').addEventListener('click', () => navigator.clipboard.writeText($('extPath').textContent).catch(() => {}));
   $('t_register').addEventListener('click', async () => {
     try {
       await invoke('torrent_register_handlers');

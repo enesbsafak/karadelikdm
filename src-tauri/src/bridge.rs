@@ -107,6 +107,11 @@ fn nmh_name() -> &'static str {
     }
 }
 
+/// En az bir tarayıcı uzantısı şu an bağlı mı.
+pub fn connected() -> bool {
+    SERVER.lock().as_ref().is_some_and(|s| s.client_count() > 0)
+}
+
 /// Tarayıcı ayarları değişince uzantılara yeni yakalama ayarını gönderir.
 pub fn broadcast() {
     if let Some(s) = SERVER.lock().as_ref() {

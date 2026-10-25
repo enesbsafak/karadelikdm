@@ -10,6 +10,7 @@ mod kcore;
 mod paths;
 mod settings;
 mod system;
+mod extinstall;
 mod tools;
 mod torrent;
 mod tray;
@@ -85,6 +86,8 @@ pub fn run() {
             torrent::torrent_inspect_cancel,
             torrent::pick_torrent_file,
             torrent::torrent_register_handlers,
+            extinstall::ext_status,
+            extinstall::ext_install,
         ])
         .on_window_event(|window, event| {
             if window.label() == "main" {

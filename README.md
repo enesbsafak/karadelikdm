@@ -108,7 +108,9 @@ address is visible to the peers and trackers you connect to while downloading a 
    page. It installs per user and needs no administrator rights.
 2. Browser extension (submitted to the Chrome Web Store, Edge Add-ons and Firefox Add-ons; install it by hand until
    it is approved):
-   - **Chrome / Edge:** unzip `karadelikdm-extension-chromium-unpacked.zip` from the release page,
+   - **Easiest:** in the app, Preferences > Browser > "Install extension". The extension folder is prepared, its path
+     is copied to the clipboard and the steps are shown; once connected it says "Connected".
+   - **Chrome / Edge, by hand:** unzip `karadelikdm-extension-chromium-unpacked.zip` from the release page,
      `chrome://extensions` (Edge: `edge://extensions`) → Developer mode → "Load unpacked" → the `karadelikdm-chromium`
      folder. Keep the folder; the browser runs the extension from it.
    - **Firefox:** until store approval, temporarily only: `about:debugging` → "Load Temporary Add-on" →

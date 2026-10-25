@@ -143,7 +143,6 @@
   "prefs.connections_hint": "İndirme tek bağlantıyla başlar; sunucu destekliyorsa bu sayıya kadar artar.",
   "prefs.data_dir": "Veri klasörü: {0}",
   "prefs.download_dir": "İndirme klasörü",
-  "prefs.extension_hint": "Tarayıcı uzantısı Chrome, Edge ve Firefox için ayrı olarak kurulur.",
   "prefs.extensions": "Uzantılar",
   "prefs.ffmpeg_hint": "HLS/DASH akışlarını tek MP4'te birleştirmek için (yeniden kodlama yapılmaz). \"none\" yazarsanız kullanılmaz; akışlar .ts ya da ayrı ses/görüntü dosyası olarak kalır.",
   "prefs.ffmpeg_ph": "Boş: PATH'te aranır",
@@ -313,5 +312,18 @@
   "ui.sort": "Sıralama",
   "ui.sort_dir": "Sırayı ters çevir",
   "ui.sidebar": "Kenar çubuğu",
-  "ui.details": "Ayrıntılar"
+  "ui.details": "Ayrıntılar",
+  "prefs.ext_title": "Tarayıcı uzantısı",
+  "prefs.ext_connected": "Bağlı",
+  "prefs.ext_not_connected": "Bağlı değil",
+  "prefs.ext_not_found": "Kurulu değil",
+  "prefs.ext_add_store": "Mağazadan ekle",
+  "prefs.ext_install": "Uzantıyı kur",
+  "prefs.ext_after_store": "Mağaza onayından sonra",
+  "prefs.ext_step1": "Tarayıcının adres çubuğuna yazın:",
+  "prefs.ext_step2": "Sağ üstteki \"Geliştirici modu\"nu açın.",
+  "prefs.ext_step3": "\"Paketlenmemiş öğe yükle\"ye basın.",
+  "prefs.ext_step4": "Açılan pencerede adres çubuğuna yapıştırıp (Ctrl+V) klasörü seçin. Yol panoya kopyalandı:",
+  "prefs.ext_copy": "Kopyala",
+  "prefs.ext_keep": "Bu klasörü silmeyin; tarayıcı uzantıyı oradan çalıştırır. Uzantı mağazada yayınlanınca bu düğme mağaza sayfasını açacak."
 }

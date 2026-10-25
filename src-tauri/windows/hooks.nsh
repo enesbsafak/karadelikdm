@@ -23,3 +23,11 @@
     DeleteRegKey HKCU "Software\Classes\KaradelikDM.torrent"
   ${EndIf}
 !macroend
+
+!macro NSIS_HOOK_POSTUNINSTALL
+  ; Kurulum klasörü burada saklanır; kalırsa yeniden kurulum, silinmiş eski klasörü varsayılan sanar.
+  ${If} $UpdateMode <> 1
+    DeleteRegKey HKCU "Software\enesbsafak\Karadelik Download Manager"
+    DeleteRegKey /ifempty HKCU "Software\enesbsafak"
+  ${EndIf}
+!macroend

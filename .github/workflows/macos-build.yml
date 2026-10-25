@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Uzantı (uygulama paketine kaynak olarak girer)
+        run: node extension/build.mjs
+
       # tauri-build, native messaging yardımcısını hedef üçlüsüyle adlandırılmış ister; universal için iki mimari birleşir
       - name: Native messaging yardımcısı (universal)
         run: |

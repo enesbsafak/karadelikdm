@@ -22,6 +22,10 @@ jobs:
         with:
           node-version: 22
 
+      # Uygulama paketi uzantıyı kaynak olarak içerir (tauri-build kaynağın var olmasını ister)
+      - name: Uzantı
+        run: node extension/build.mjs
+
       # tauri-build, externalBin olarak verilen native messaging yardımcısını hedef üçlüsüyle adlandırılmış ister
       - name: Native messaging yardımcısı
         shell: bash
@@ -41,3 +45,42 @@ jobs:
       - name: Uzantı testleri
         working-directory: extension
         run: npm test
+
+  # Kurulum programı: temiz bir Windows'ta derler, sessizce kurar, uygulamayı ve uzantı kaynağını denetler, kaldırır;
+  # kaldırıcının kurulum kayıtlarını (kurulum klasörü dahil) sildiğini doğrular.
+  installer:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Derle
+        shell: pwsh
+        run: |
+          node extension/build.mjs
+          cargo build --locked --release -p kdm-nmh
+          New-Item -ItemType Directory -Force src-tauri\binaries | Out-Null
+          Copy-Item target\release\karadelikdm-nmh.exe src-tauri\binaries\karadelikdm-nmh-x86_64-pc-windows-msvc.exe
+          npm ci
+          npx tauri build --bundles nsis
+      - name: Kur, denetle, kaldır
+        shell: pwsh
+        run: |
+          $setup = Get-ChildItem target\release\bundle\nsis\*-setup.exe | Select-Object -First 1
+          $dir = Join-Path $env:RUNNER_TEMP 'kdm kurulum'
+          Start-Process $setup.FullName -ArgumentList '/S', "/D=$dir" -Wait
+          foreach ($f in 'karadelikdm.exe', 'karadelikdm-nmh.exe', 'extension\chromium\manifest.json', 'uninstall.exe') {
+            if (-not (Test-Path (Join-Path $dir $f))) { throw "kurulumda yok: $f" }
+          }
+          $key = 'HKCU:\Software\enesbsafak\Karadelik Download Manager'
+          if (-not (Test-Path $key)) { throw 'kurulum klasörü kaydı yazılmadı' }
+          Start-Process (Join-Path $dir 'uninstall.exe') -ArgumentList '/S' -Wait
+          # NSIS kaldırıcısı kendini geçici klasöre kopyalayıp oradan çalışır; bitmesini bekle
+          for ($i = 0; $i -lt 30 -and (Test-Path (Join-Path $dir 'karadelikdm.exe')); $i++) { Start-Sleep -Seconds 1 }
+          if (Test-Path (Join-Path $dir 'karadelikdm.exe')) { throw 'kaldırma tamamlanmadı' }
+          for ($i = 0; $i -lt 10 -and (Test-Path $key); $i++) { Start-Sleep -Seconds 1 }
+          if (Test-Path $key) { throw 'kaldırıcı kurulum klasörü kaydını silmedi' }
+          if (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\Karadelik Download Manager') { throw 'kaldırma kaydı kaldı' }
+          'kurulum ve kaldırma doğrulandı'

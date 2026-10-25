@@ -19,6 +19,9 @@ $notesFile = "docs\releases\$version.md"
 if (-not (Test-Path $notesFile)) { throw "Sürüm notu yok: $notesFile" }
 
 if (-not $NoBuild) {
+    # Uygulama, paketlenmemiş uzantıyı kaynak olarak taşır (Tercihler > Tarayıcı > Uzantıyı kur); derleme bunu ister
+    node extension/build.mjs
+    if ($LASTEXITCODE -ne 0) { throw 'Uzantı derlenemedi' }
     cargo test --workspace --quiet
     if ($LASTEXITCODE -ne 0) { throw 'Testler başarısız' }
     # Native messaging host, kurulumda ana exe'nin yanına konur (tauri.conf.json > bundle.externalBin)

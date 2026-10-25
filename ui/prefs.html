@@ -86,7 +86,20 @@
       </div>
       <div class="hint" style="margin-left:160px"><a href="#" id="resetExts" data-i18n="prefs.reset_default"></a></div>
       <hr class="sep">
-      <div class="notice" style="margin:0"><span data-i18n="prefs.extension_hint"></span></div>
+      <div class="ext-head">
+        <strong data-i18n="prefs.ext_title">Tarayıcı uzantısı</strong>
+        <span class="ext-state" id="extState"></span>
+      </div>
+      <div class="ext-list" id="extList"></div>
+      <div class="ext-steps hidden" id="extSteps">
+        <ol>
+          <li><span data-i18n="prefs.ext_step1"></span> <code id="extPage"></code> <button class="btn mini" type="button" id="copyPage" data-i18n="prefs.ext_copy"></button></li>
+          <li data-i18n="prefs.ext_step2"></li>
+          <li data-i18n="prefs.ext_step3"></li>
+          <li><span data-i18n="prefs.ext_step4"></span> <code id="extPath"></code> <button class="btn mini" type="button" id="copyPath" data-i18n="prefs.ext_copy"></button></li>
+        </ol>
+        <div class="hint" style="margin:0" data-i18n="prefs.ext_keep"></div>
+      </div>
     </section>
 
     <section data-pane="torrent" class="hidden">
