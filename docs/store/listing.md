@@ -18,6 +18,7 @@ yüklemek gerekmez.
 - **Gizlilik politikası URL'si:** https://github.com/enesbsafak/karadelikdm/blob/master/PRIVACY.md
 - **Lisans:** MIT
 - **Ekran görüntüleri:** `docs/store/screenshot-1.png`, `screenshot-2.png` (1280×800)
+- **Küçük tanıtım görseli (Chrome):** `docs/store/promo-440x280.png`
 - **Simge:** `extension/src/icons/logo.png` (128×128)
 
 ## Kısa açıklama (en çok 132 karakter)
