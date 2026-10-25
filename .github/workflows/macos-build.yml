@@ -8,6 +8,8 @@ on:
 jobs:
   dmg:
     runs-on: macos-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -39,11 +41,15 @@ jobs:
         working-directory: extension
         run: node build.mjs
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: karadelikdm-macos
-          path: |
-            target/universal-apple-darwin/release/bundle/dmg/*.dmg
-            extension/chromium
-            extension/firefox
-          if-no-files-found: error
+      # Actions dosya kotasına sayılmasın diye taslak sürüme yüklenir (taslak yalnız depo erişimi olanlara görünür)
+      - name: Taslak sürüme yükle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=mac-test
+          (cd extension && zip -qr ../karadelikdm-extension-chromium.zip chromium && zip -qr ../karadelikdm-extension-firefox.zip firefox)
+          gh release view "$tag" >/dev/null 2>&1 || gh release create "$tag" --draft --prerelease --target "$GITHUB_SHA" \
+            --title "macOS deneme paketi" --notes "İmzasız deneme paketi. İlk açılışta Finder'da sağ tık > Aç."
+          gh release upload "$tag" --clobber \
+            "target/universal-apple-darwin/release/bundle/dmg/Karadelik Download Manager_0.1.0_universal.dmg" \
+            karadelikdm-extension-chromium.zip karadelikdm-extension-firefox.zip
