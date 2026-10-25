@@ -2721,7 +2721,7 @@ dependencies = [
 
 [[package]]
 name = "karadelikdm"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2756,7 +2756,7 @@ dependencies = [
 
 [[package]]
 name = "kdm-bridge"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2771,7 +2771,7 @@ dependencies = [
 
 [[package]]
 name = "kdm-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -2797,7 +2797,7 @@ dependencies = [
 
 [[package]]
 name = "kdm-ftp"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "percent-encoding",
@@ -2809,7 +2809,7 @@ dependencies = [
 
 [[package]]
 name = "kdm-grabber"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "html5ever",
@@ -2818,7 +2818,7 @@ dependencies = [
 
 [[package]]
 name = "kdm-media"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aes",
  "anyhow",
@@ -2829,7 +2829,7 @@ dependencies = [
 
 [[package]]
 name = "kdm-nmh"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "dirs 6.0.0",
@@ -2839,7 +2839,7 @@ dependencies = [
 
 [[package]]
 name = "kdm-torrent"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "librqbit",
@@ -2851,7 +2851,7 @@ dependencies = [
 
 [[package]]
 name = "kdm-zip"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "crc32fast",
