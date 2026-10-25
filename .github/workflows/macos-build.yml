@@ -1,0 +1,45 @@
+# Elle tetiklenir: Apple Silicon ve Intel Mac'lerde çalışan (universal) imzasız .dmg ve tarayıcı uzantısını üretir.
+# İmzasız olduğu için ilk açılışta Gatekeeper uyarır: Finder'da sağ tık > Aç.
+name: macOS paketi
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dmg:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # tauri-build, native messaging yardımcısını hedef üçlüsüyle adlandırılmış ister; universal için iki mimari birleşir
+      - name: Native messaging yardımcısı (universal)
+        run: |
+          cargo build --locked --release -p kdm-nmh --target aarch64-apple-darwin
+          cargo build --locked --release -p kdm-nmh --target x86_64-apple-darwin
+          mkdir -p src-tauri/binaries
+          lipo -create -output src-tauri/binaries/karadelikdm-nmh-universal-apple-darwin \
+            target/aarch64-apple-darwin/release/karadelikdm-nmh target/x86_64-apple-darwin/release/karadelikdm-nmh
+
+      - name: Uygulama paketi
+        run: |
+          npm ci
+          npx tauri build --target universal-apple-darwin --bundles app,dmg
+
+      - name: Tarayıcı uzantısı
+        working-directory: extension
+        run: node build.mjs
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: karadelikdm-macos
+          path: |
+            target/universal-apple-darwin/release/bundle/dmg/*.dmg
+            extension/chromium
+            extension/firefox
+          if-no-files-found: error
