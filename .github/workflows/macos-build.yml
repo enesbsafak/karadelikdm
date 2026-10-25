@@ -23,6 +23,10 @@ jobs:
           cargo build --locked --release -p kdm-nmh --target aarch64-apple-darwin
           cargo build --locked --release -p kdm-nmh --target x86_64-apple-darwin
           mkdir -p src-tauri/binaries
+          # Universal paket her mimariyi ayrı derler; her derleme kendi üçlüsüyle adlandırılmış kopyayı ister
+          for t in aarch64-apple-darwin x86_64-apple-darwin; do
+            cp "target/$t/release/karadelikdm-nmh" "src-tauri/binaries/karadelikdm-nmh-$t"
+          done
           lipo -create -output src-tauri/binaries/karadelikdm-nmh-universal-apple-darwin \
             target/aarch64-apple-darwin/release/karadelikdm-nmh target/x86_64-apple-darwin/release/karadelikdm-nmh
 
