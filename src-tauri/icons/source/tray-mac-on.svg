@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- macOS menü çubuğu şablonu (yalnız siyah + saydamlık), indirme sürerken: dolu disk, ok oyuk -->
+  <defs>
+    <mask id="cut">
+      <rect width="512" height="512" fill="#fff"/>
+      <path d="M256 168 V318 M196 264 L256 324 L316 264" fill="none" stroke="#000" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+  <circle cx="256" cy="256" r="226" fill="none" stroke="#000" stroke-width="30"/>
+  <circle cx="256" cy="256" r="160" fill="#000" mask="url(#cut)"/>
+</svg>

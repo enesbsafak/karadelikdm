@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512">
+  <!-- Karadelik DM: olay ufkuna inen indirme oku. Windows/Linux ve uygulama içi logo (tam kenar). -->
+  <defs>
+    <radialGradient id="glow" cx="256" cy="256" r="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff8a1f"/>
+      <stop offset="0.5" stop-color="#ffb347"/>
+      <stop offset="0.57" stop-color="#ff8a1f" stop-opacity="0.95"/>
+      <stop offset="0.72" stop-color="#d4570f" stop-opacity="0.55"/>
+      <stop offset="0.88" stop-color="#ff8a1f" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#ff8a1f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="256" cy="256" r="240" fill="url(#glow)"/>
+  <circle cx="256" cy="256" r="124" fill="#06060a" stroke="#ffe2b8" stroke-width="7"/>
+  <path d="M256 186 V312 M204 266 L256 318 L308 266" fill="none" stroke="#ffe2b8" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

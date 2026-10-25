@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- macOS menü çubuğu şablonu, indirme yokken: boş disk ve ok çizgisi -->
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#000" stroke-width="30"/>
+  <path d="M256 186 V312 M206 264 L256 314 L306 264" fill="none" stroke="#000" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

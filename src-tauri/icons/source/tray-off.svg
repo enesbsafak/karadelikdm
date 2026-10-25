@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Tepsi, indirme yokken: aynı işaret, gri -->
+  <defs>
+    <radialGradient id="glow" cx="256" cy="256" r="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0.5" stop-color="#b9b8c4"/>
+      <stop offset="0.6" stop-color="#9a99a6" stop-opacity="0.8"/>
+      <stop offset="0.8" stop-color="#8a8996" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="#8a8996" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="256" cy="256" r="240" fill="url(#glow)"/>
+  <circle cx="256" cy="256" r="124" fill="#06060a" stroke="#e6e5ec" stroke-width="9"/>
+  <path d="M256 186 V312 M204 266 L256 318 L308 266" fill="none" stroke="#e6e5ec" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

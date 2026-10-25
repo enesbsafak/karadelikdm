@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512">
+  <!-- macOS: Apple ikon ızgarası, koyu karo (824/1024) içinde aynı işaret. -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#201d2a"/>
+      <stop offset="1" stop-color="#0b0b10"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="256" cy="256" r="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff8a1f"/>
+      <stop offset="0.5" stop-color="#ffb347"/>
+      <stop offset="0.57" stop-color="#ff8a1f" stop-opacity="0.95"/>
+      <stop offset="0.72" stop-color="#d4570f" stop-opacity="0.55"/>
+      <stop offset="0.88" stop-color="#ff8a1f" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#ff8a1f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g transform="translate(50 50) scale(0.8047)">
+    <rect width="512" height="512" rx="114" fill="url(#tile)"/>
+    <rect x="1.5" y="1.5" width="509" height="509" rx="112.5" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="3"/>
+    <g transform="translate(56 56) scale(0.78125)">
+      <circle cx="256" cy="256" r="240" fill="url(#glow)"/>
+      <circle cx="256" cy="256" r="124" fill="#06060a" stroke="#ffe2b8" stroke-width="7"/>
+      <path d="M256 186 V312 M204 266 L256 318 L308 266" fill="none" stroke="#ffe2b8" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+</svg>
