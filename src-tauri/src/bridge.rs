@@ -91,7 +91,7 @@ pub fn start() {
     let nmh = std::env::current_exe().ok().and_then(|e| e.parent().map(|d| d.join(nmh_name())));
     match nmh {
         Some(p) if p.is_file() => {
-            if let Err(e) = kdm_bridge::register_native_hosts(&p, &data, &[kdm_bridge::CHROME_EXTENSION_ID], &[kdm_bridge::FIREFOX_EXTENSION_ID]) {
+            if let Err(e) = kdm_bridge::register_native_hosts(&p, &data, &kdm_bridge::chrome_ids(), &[kdm_bridge::FIREFOX_EXTENSION_ID]) {
                 log(&format!("Native messaging kaydı yapılamadı: {e:#}"));
             }
         }

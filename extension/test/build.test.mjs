@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -100,4 +100,47 @@ test('dil dosyaları aynı anahtarlara sahip ve kullanılan her anahtar tanıml�
 
 test('merge nesneleri birleştirir, dizileri değiştirir', () => {
   assert.deepEqual(merge({ a: { x: 1, y: 2 }, l: [1] }, { a: { y: 3 }, l: [2] }), { a: { x: 1, y: 3 }, l: [2] });
+});
+
+/** Sıkıştırmasız zip okuyucu (yalnız test için): merkezi dizinden adları, yerel başlıktan veriyi alır. */
+function readStoredZip(buf) {
+  const eocd = buf.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
+  assert.ok(eocd >= 0, 'zip sonu yok');
+  const count = buf.readUInt16LE(eocd + 10);
+  let p = buf.readUInt32LE(eocd + 16);
+  const files = new Map();
+  for (let i = 0; i < count; i++) {
+    assert.equal(buf.readUInt32LE(p), 0x02014b50);
+    const method = buf.readUInt16LE(p + 10);
+    const size = buf.readUInt32LE(p + 24);
+    const nameLen = buf.readUInt16LE(p + 28);
+    const extraLen = buf.readUInt16LE(p + 30);
+    const commentLen = buf.readUInt16LE(p + 32);
+    const local = buf.readUInt32LE(p + 42);
+    const name = buf.subarray(p + 46, p + 46 + nameLen).toString('utf8');
+    assert.equal(method, 0);
+    assert.equal(buf.readUInt32LE(local), 0x04034b50);
+    const dataStart = local + 30 + buf.readUInt16LE(local + 26) + buf.readUInt16LE(local + 28);
+    files.set(name, buf.subarray(dataStart, dataStart + size));
+    p += 46 + nameLen + extraLen + commentLen;
+  }
+  return files;
+}
+
+test('mağaza paketleri: geçerli zip, kökte manifest, Chromium paketinde key yok', async () => {
+  const { storePackages } = await import('../build.mjs');
+  const out = mkdtempSync(join(tmpdir(), 'kdm-store-'));
+  const r = build(join(out, 'b'));
+  const z = storePackages(r, join(out, 'store'));
+  for (const target of ['chromium', 'firefox']) {
+    const files = readStoredZip(readFileSync(z[target]));
+    const m = JSON.parse(files.get('manifest.json').toString('utf8'));
+    assert.equal(m.key, undefined, `${target} paketinde key var`);
+    assert.ok(files.has('background.js') && files.has('icons/logo.png'));
+    assert.deepEqual(files.get('icons/logo.png'), readFileSync(join(r[target].dir, 'icons', 'logo.png')));
+  }
+  // Aynı kaynak aynı paketi verir
+  const again = storePackages(r, join(out, 'store2'));
+  assert.deepEqual(readFileSync(z.chromium), readFileSync(again.chromium));
+  rmSync(out, { recursive: true, force: true });
 });

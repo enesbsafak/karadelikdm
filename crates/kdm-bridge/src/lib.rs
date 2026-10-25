@@ -22,6 +22,9 @@ use std::path::{Path, PathBuf};
 pub const HOST_NAME: &str = "dev.karadelik.dm";
 /// Paketlenmemiş kurulumda da sabit kalsın diye manifestteki `key`'den türetilir (`extension/src/chromium.json`).
 pub const CHROME_EXTENSION_ID: &str = "kkifckmmeinedmmdokgacefiojpfbpfl";
+/// Chrome Web Store ve Edge Eklentileri yayınlanınca kendi kimliklerini verir (paketteki `key` kabul edilmez).
+/// Mağazanın verdiği kimlikler buraya eklenir; native host ve köprü hepsine izin verir.
+pub const STORE_CHROME_IDS: &[&str] = &[];
 pub const FIREFOX_EXTENSION_ID: &str = "karadelik-dm@enesbsafak";
 /// Protokol sürümü; uyumsuz değişiklikte artar. `hello` yanıtında uzantıya gider.
 pub const PROTOCOL_VERSION: u32 = 1;
@@ -146,12 +149,31 @@ fn write_private(path: &Path, body: &[u8]) -> Result<()> {
 /// `moz-extension://<uuid>` atadığından orada önek eşleşmesi kullanılır; asıl koruma yine token'dır ve
 /// token'ı yalnız `allowed_extensions` listesindeki uzantı native host'tan alabilir.
 pub fn default_allowed_origins() -> Vec<String> {
-    vec![format!("chrome-extension://{CHROME_EXTENSION_ID}"), "moz-extension://*".to_string()]
+    let mut v: Vec<String> = chrome_ids().iter().map(|id| format!("chrome-extension://{id}")).collect();
+    v.push("moz-extension://*".to_string());
+    v
+}
+
+/// Geliştirici paketinin (manifestteki `key`) ve mağaza paketlerinin Chrome/Edge kimlikleri.
+pub fn chrome_ids() -> Vec<&'static str> {
+    std::iter::once(CHROME_EXTENSION_ID).chain(STORE_CHROME_IDS.iter().copied()).collect()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn every_chrome_id_is_allowed_and_well_formed() {
+        let ids = chrome_ids();
+        assert_eq!(ids[0], CHROME_EXTENSION_ID);
+        for id in &ids {
+            assert!(id.len() == 32 && id.bytes().all(|b| (b'a'..=b'p').contains(&b)), "geçersiz kimlik {id}");
+        }
+        let origins = default_allowed_origins();
+        assert_eq!(origins.len(), ids.len() + 1);
+        assert!(origins.contains(&"moz-extension://*".to_string()));
+    }
 
     pub(crate) fn temp_dir(tag: &str) -> PathBuf {
         let d = std::env::temp_dir().join(format!("kdm-bridge-{tag}-{}-{}", std::process::id(), rand::random::<u32>()));
