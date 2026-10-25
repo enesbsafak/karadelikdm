@@ -120,10 +120,15 @@ fn only_selected_files_are_downloaded() {
     let p = wait_finished(&c, &hash);
     assert_eq!(p.total, b.len() as u64, "toplam yalnız seçili dosya");
     assert_eq!(std::fs::read(out.join("cd2").join("b.bin")).unwrap(), b);
-    // Seçilmeyen dosya ya hiç yok ya da tam değil (komşu parça paylaşıldığı için kısmen yazılmış olabilir)
-    let a_len = std::fs::metadata(out.join("a.bin")).map(|m| m.len()).unwrap_or(0);
-    let a_have = std::fs::read(out.join("a.bin")).unwrap_or_default();
-    assert!(a_len == 0 || a_have.iter().filter(|&&x| x != 0).count() < a_have.len() / 2, "seçilmeyen dosya inmiş");
+    // Seçilmeyen dosyadan en çok, seçili dosyayla paylaşılan parçalar iner (her yanda bir parça)
+    let a_idx = meta.files.iter().position(|f| f.path == "a.bin").unwrap();
+    let a_have = p.files.get(a_idx).copied().unwrap_or(0);
+    let on_disk = std::fs::read(out.join("a.bin")).map(|v| v.iter().filter(|&&x| x != 0).count()).unwrap_or(0);
+    assert!(
+        a_have <= 2 * 64 * 1024,
+        "seçilmeyen dosyadan {a_have} bayt indi (diskte sıfır olmayan {on_disk} bayt, dosya sırası {:?})",
+        meta.files.iter().map(|f| f.path.as_str()).collect::<Vec<_>>()
+    );
     c.shutdown();
     drop(s.rt);
 }

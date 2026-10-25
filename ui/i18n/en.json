@@ -305,5 +305,13 @@
   "prefs.t_register": "Make default for magnet and .torrent",
   "prefs.t_registered": "Registered. The browser may ask for permission on the first magnet link.",
   "prefs.t_note": "Port, DHT, UPnP and local network settings take effect after a restart. In BitTorrent your IP address is visible to the peers you connect to. The torrent session does not open until the first torrent starts.",
-  "prefs.t_ratio_short": "0: do not seed"
+  "prefs.t_ratio_short": "0: do not seed",
+  "row.peers": "{0} peers",
+  "row.left": "{0} left",
+  "det.peers_label": "Peers",
+  "ui.clipboard_short": "Clipboard",
+  "ui.sort": "Sort by",
+  "ui.sort_dir": "Reverse order",
+  "ui.sidebar": "Sidebar",
+  "ui.details": "Details"
 }

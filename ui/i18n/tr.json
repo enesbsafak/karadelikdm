@@ -305,5 +305,13 @@
   "prefs.t_register": "Magnet ve .torrent için varsayılan yap",
   "prefs.t_registered": "Kaydedildi. Tarayıcı ilk magnet bağlantısında izin isteyebilir.",
   "prefs.t_note": "Port, DHT, UPnP ve yerel ağ ayarları uygulama yeniden başlayınca geçerli olur. Torrentte IP adresiniz bağlandığınız eşlere görünür. Torrent oturumu ilk torrent başlatılana kadar açılmaz.",
-  "prefs.t_ratio_short": "0: paylaşma"
+  "prefs.t_ratio_short": "0: paylaşma",
+  "row.peers": "{0} eş",
+  "row.left": "{0} kaldı",
+  "det.peers_label": "Eşler",
+  "ui.clipboard_short": "Pano",
+  "ui.sort": "Sıralama",
+  "ui.sort_dir": "Sırayı ters çevir",
+  "ui.sidebar": "Kenar çubuğu",
+  "ui.details": "Ayrıntılar"
 }

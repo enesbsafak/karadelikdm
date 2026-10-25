@@ -21,6 +21,7 @@ function applyI18n(root = document) {
   root.querySelectorAll('[data-i18n]').forEach((e) => { e.textContent = T(e.dataset.i18n); });
   root.querySelectorAll('[data-i18n-title]').forEach((e) => { e.title = T(e.dataset.i18nTitle); });
   root.querySelectorAll('[data-i18n-ph]').forEach((e) => { e.placeholder = T(e.dataset.i18nPh); });
+  root.querySelectorAll('[data-i18n-aria]').forEach((e) => { e.setAttribute('aria-label', T(e.dataset.i18nAria)); });
 }
 
 listen('i18n', (table) => { I18N = table; applyI18n(); if (window.onI18n) window.onI18n(); });
@@ -91,10 +92,17 @@ const ICONS = {
   speed: '<path d="M12 14l4-6"/><path d="M4 18a8 8 0 1 1 16 0"/>',
   clipboard: '<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9z"/>',
   grabber: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M8 11h6M11 8v6"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
+  sort_desc: '<path d="M7 5v14M3.5 15.5L7 19l3.5-3.5M13 7h8M13 12h6M13 17h4"/>',
+  sort_asc: '<path d="M7 19V5M3.5 8.5L7 5l3.5 3.5M13 7h4M13 12h6M13 17h8"/>',
+  torrent: '<circle cx="12" cy="12" r="6.5"/><ellipse cx="12" cy="13" rx="10" ry="3.2"/>',
+  stream: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M10 9.5l5 2.5-5 2.5z"/>',
+  open: '<path d="M14 4h6v6M20 4l-9 9M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/>',
+  retry: '<path d="M20 11a8 8 0 1 0-2.4 5.9M20 5v6h-6"/>',
 };
 
 function icon(name) {
-  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name] || ICONS.general}</svg>`;
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ICONS.general}</svg>`;
 }
 
 // Esc ile diyalog/tercih pencerelerini kapat
