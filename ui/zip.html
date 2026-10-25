@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Karadelik Download Manager</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/dm.css">
+</head>
+<body data-esc-close="1">
+<div class="page">
+  <div class="content">
+    <div class="row"><strong id="url" class="ellipsis" style="max-width:100%"></strong></div>
+    <div class="statusbar" style="margin:0 0 6px"><span class="msg" id="status"></span><div class="progress hidden" id="progress"><div></div></div></div>
+    <div class="q-files" id="entries" style="min-height:260px"></div>
+    <div class="row" style="margin-top:10px">
+      <label class="lbl" data-i18n="zip.extract_to">Çıkarılacak yer</label>
+      <input class="field grow" id="dir" spellcheck="false">
+      <button class="btn" id="browse" data-i18n="btn.browse">Gözat</button>
+    </div>
+    <div class="error hidden" id="error"></div>
+  </div>
+  <div class="footer">
+    <label class="check" style="margin:0"><input type="checkbox" id="all"><span data-i18n="grab.select_all"></span></label>
+    <span class="note" id="note"></span>
+    <button class="btn" id="close" data-i18n="btn.close">Kapat</button>
+    <button class="btn" id="whole" data-i18n="zip.download_whole">Tamamını indir</button>
+    <button class="btn primary" id="extract" data-i18n="zip.extract">Seçilenleri indir</button>
+  </div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/zip.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "extName": { "message": "Karadelik Download Manager" },
+  "extDescription": { "message": "Tarayıcı indirmelerini ve medya akışlarını Karadelik Download Manager'a devreder." },
+  "actionTitle": { "message": "Karadelik Download Manager" },
+  "menuDownload": { "message": "Karadelik ile indir" },
+  "menuDownloadAll": { "message": "Tüm bağlantıları Karadelik ile indir" },
+  "statusConnected": { "message": "Bağlı" },
+  "statusConnecting": { "message": "Bağlanıyor" },
+  "statusOffline": { "message": "Uygulama kapalı" },
+  "offlineHint": { "message": "Karadelik çalışmıyor. İndirmeler tarayıcıda kalır." },
+  "startApp": { "message": "Başlat" },
+  "captureDisabledInApp": { "message": "Tarayıcıdan yakalama uygulamanın tercihlerinde kapalı." },
+  "pauseCapture": { "message": "Yakalamayı duraklat" },
+  "pauseHint": { "message": "Tarayıcı kapanana kadar" },
+  "excludeSite": { "message": "Bu sitede yakalama" },
+  "noSite": { "message": "Bu sayfada kullanılamaz" },
+  "mediaTitle": { "message": "Bu sayfadaki medya" },
+  "mediaEmpty": { "message": "Henüz video ya da ses bulunmadı. Oynatmayı başlatıp bu pencereyi yeniden açın." },
+  "kindFile": { "message": "dosya" },
+  "sent": { "message": "Gönderildi" },
+  "sendFailed": { "message": "Başarısız" }
+}

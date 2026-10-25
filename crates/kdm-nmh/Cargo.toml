@@ -1,0 +1,16 @@
+[package]
+name = "kdm-nmh"
+description = "Karadelik Download Manager native messaging host: uzantıya köprü adresini verir, gerekirse uygulamayı başlatır"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "karadelikdm-nmh"
+path = "src/main.rs"
+
+[dependencies]
+kdm-bridge = { path = "../kdm-bridge" }
+serde_json = "1"
+anyhow = "1"
+dirs = "6"

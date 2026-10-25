@@ -1,0 +1,12 @@
+[package]
+name = "kdm-grabber"
+description = "Karadelik Download Manager site tarayıcı (Site Grabber)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1"
+url = "2"
+# Ağaç kurmadan yalnız WHATWG uyumlu tokenizer kullanılır. Sürüm Tauri'nin zaten çektiğiyle aynı: ek derleme yok
+html5ever = "0.39"

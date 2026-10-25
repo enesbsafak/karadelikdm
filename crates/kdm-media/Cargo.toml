@@ -1,0 +1,13 @@
+[package]
+name = "kdm-media"
+description = "Karadelik Download Manager HLS / MPEG-DASH indirme ve birleştirme"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1"
+url = "2"
+quick-xml = "0.42"
+aes = "0.8"
+cbc = "0.1"

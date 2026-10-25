@@ -1,0 +1,17 @@
+[package]
+name = "kdm-ftp"
+description = "Karadelik Download Manager FTP istemcisi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1"
+percent-encoding = "2"
+url = "2"
+# ureq ile aynı TLS yığını: rustls + ring, kökler işletim sisteminden
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12", "logging"] }
+rustls-platform-verifier = "0.7"
+
+[dev-dependencies]
+rcgen = { version = "0.14", default-features = false, features = ["crypto", "ring"] }

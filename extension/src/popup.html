@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="bar">
+    <img class="logo" src="icons/logo.png" alt="">
+    <strong class="brand">Karadelik DM</strong>
+    <span id="status" class="pill" role="status"></span>
+  </header>
+
+  <section id="offline" class="notice hidden">
+    <span data-i18n="offlineHint"></span>
+    <button id="start" class="btn primary" type="button" data-i18n="startApp"></button>
+  </section>
+  <section id="disabled" class="notice hidden">
+    <span data-i18n="captureDisabledInApp"></span>
+  </section>
+
+  <section class="rows">
+    <label class="row">
+      <span class="label"><span data-i18n="pauseCapture"></span><small data-i18n="pauseHint"></small></span>
+      <input type="checkbox" id="paused" class="switch">
+    </label>
+    <label class="row" id="siteRow">
+      <span class="label"><span data-i18n="excludeSite"></span><small id="host"></small></span>
+      <input type="checkbox" id="excluded" class="switch">
+    </label>
+  </section>
+
+  <section class="media">
+    <h2 data-i18n="mediaTitle"></h2>
+    <ul id="media" class="list"></ul>
+    <p id="mediaEmpty" class="empty" data-i18n="mediaEmpty"></p>
+  </section>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

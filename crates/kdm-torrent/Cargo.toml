@@ -1,0 +1,19 @@
+[package]
+name = "kdm-torrent"
+description = "Karadelik Download Manager BitTorrent / magnet istemcisi (librqbit üstünde)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1"
+percent-encoding = "2"
+# Protokol (DHT, izleyiciler, eş bağlantısı, parça doğrulama) librqbit'te; bu crate onu motorun eşzamanlı
+# (thread tabanlı) dünyasına bağlar.
+librqbit = { version = "9.0.1", default-features = false }
+# librqbit'in TLS özellikleri reqwest 0.13 üzerinden rustls'a aws-lc-rs sağlayıcısını ekler; ureq ve kdm-ftp ring
+# kullandığından aynı süreçte iki sağlayıcı olur. İzleyici ve .torrent adresleri için işletim sisteminin TLS'i
+# (Windows'ta SChannel) ve SHA-1 için işletim sisteminin kripto API'si seçilir.
+reqwest = { version = "0.13", default-features = false, features = ["native-tls"] }
+librqbit-core = { version = "9.0.1", default-features = false, features = ["sha1-crypto-hash"] }
+tokio = { version = "1", features = ["rt-multi-thread", "time", "sync"] }

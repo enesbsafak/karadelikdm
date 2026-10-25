@@ -1,0 +1,15 @@
+[package]
+name = "kdm-zip"
+description = "Karadelik Download Manager uzak ZIP önizleme ve seçmeli çıkarma"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1"
+flate2 = "1"
+crc32fast = "1"
+
+[dev-dependencies]
+# Yalnız test verisi üretmek için: okuyucumuzu bağımsız bir yazıcının çıktısıyla da sınarız
+zip = { version = "9", default-features = false, features = ["deflate-flate2"] }

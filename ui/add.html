@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Karadelik Download Manager</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/dm.css">
+</head>
+<body data-esc-close="1">
+<div class="page">
+  <div class="content">
+    <div class="row" id="urlRow">
+      <label class="lbl" data-i18n="add.url">Adres</label>
+      <input class="field grow" id="url" spellcheck="false" autocomplete="off">
+      <button class="btn" id="openTorrent" data-i18n="add.open_torrent" data-i18n-title="add.open_torrent_hint">Torrent…</button>
+    </div>
+    <div class="row hidden" id="urlsRow" style="align-items:flex-start">
+      <label class="lbl" data-i18n="add.urls">Adresler</label>
+      <textarea class="field grow" id="urls" spellcheck="false" rows="6"></textarea>
+    </div>
+    <div class="add-info" id="info"></div>
+    <div class="hidden" id="torrentBox">
+      <div class="row" style="margin-bottom:4px">
+        <label class="lbl" data-i18n="add.torrent_files">Dosyalar</label>
+        <label class="check" style="margin:0"><input type="checkbox" id="tAll"><span data-i18n="grab.select_all"></span></label>
+        <span class="muted grow" id="tSummary" style="text-align:right;font-size:12px"></span>
+      </div>
+      <div class="q-files" id="tFiles" style="max-height:190px;min-height:60px;margin:0 0 12px 160px"></div>
+    </div>
+    <div class="row hidden" id="videoRow">
+      <label class="lbl" data-i18n="add.quality">Kalite</label>
+      <select class="field grow" id="mediaVideo"></select>
+    </div>
+    <div class="row hidden" id="audioRow">
+      <label class="lbl" data-i18n="add.audio">Ses</label>
+      <select class="field grow" id="mediaAudio"></select>
+    </div>
+    <div class="row" id="nameRow">
+      <label class="lbl" data-i18n="add.name" id="nameLbl">Dosya adı</label>
+      <input class="field grow" id="name" spellcheck="false">
+    </div>
+    <div class="row">
+      <label class="lbl" data-i18n="add.folder">Klasör</label>
+      <input class="field grow" id="dir" spellcheck="false">
+      <button class="btn" id="browse" data-i18n="btn.browse">Gözat</button>
+    </div>
+    <div class="row">
+      <label class="lbl" data-i18n="add.queue">Kuyruk</label>
+      <select class="field grow" id="queue"></select>
+    </div>
+    <div class="row">
+      <label class="lbl" data-i18n="add.description">Açıklama</label>
+      <input class="field grow" id="description">
+    </div>
+    <details class="more" id="moreBox">
+      <summary data-i18n="add.advanced">Gelişmiş</summary>
+      <div class="row">
+        <label class="lbl" data-i18n="add.user">Kullanıcı adı</label>
+        <input class="field grow" id="user" autocomplete="off">
+        <input class="field grow" id="password" type="password" data-i18n-ph="add.password" autocomplete="off">
+      </div>
+      <div class="row">
+        <label class="lbl">Referer</label>
+        <input class="field grow" id="referer" spellcheck="false">
+      </div>
+      <div class="row">
+        <label class="lbl" data-i18n="add.cookies">Çerezler</label>
+        <input class="field grow" id="cookies" spellcheck="false">
+      </div>
+      <div class="row">
+        <label class="lbl" data-i18n="add.connections">Bağlantı sayısı</label>
+        <select class="field small" id="connections"></select>
+      </div>
+      <div class="row">
+        <label class="lbl" data-i18n="add.checksum">Özet doğrula</label>
+        <select class="field small" id="algo">
+          <option value="sha256">SHA-256</option><option value="sha1">SHA-1</option><option value="md5">MD5</option>
+        </select>
+        <input class="field grow" id="checksum" spellcheck="false" data-i18n-ph="add.checksum_ph">
+      </div>
+    </details>
+    <div class="error hidden" id="error"></div>
+  </div>
+  <div class="footer">
+    <span class="note" id="note"></span>
+    <button class="btn" id="cancel" data-i18n="btn.cancel">Vazgeç</button>
+    <button class="btn hidden" id="zipBtn" data-i18n="add.zip_contents">İçeriği göster</button>
+    <button class="btn" id="later" data-i18n="add.later">Sonra</button>
+    <button class="btn" id="toQueue" data-i18n="add.to_queue">Kuyruğa ekle</button>
+    <button class="btn primary" id="now" data-i18n="add.now">Şimdi indir</button>
+  </div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/add.js"></script>
+</body>
+</html>

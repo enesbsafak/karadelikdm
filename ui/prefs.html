@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Karadelik Download Manager</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/dm.css">
+</head>
+<body data-esc-close="1">
+<div class="page">
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="general" data-i18n="prefs.general">Genel</button>
+    <button class="tab" data-tab="save" data-i18n="prefs.save">Kayıt</button>
+    <button class="tab" data-tab="conn" data-i18n="prefs.connection">Bağlantı</button>
+    <button class="tab" data-tab="browser" data-i18n="prefs.browser">Tarayıcı</button>
+    <button class="tab" data-tab="torrent">BitTorrent</button>
+    <button class="tab" data-tab="quota" data-i18n="prefs.quota">Kota</button>
+    <button class="tab" data-tab="security" data-i18n="prefs.security">Güvenlik</button>
+  </div>
+  <div class="content">
+    <section data-pane="general">
+      <div class="row"><label class="lbl" data-i18n="prefs.language">Dil</label><select class="field grow" id="language"></select></div>
+      <label class="check"><input type="checkbox" id="run_at_startup"><span data-i18n="prefs.run_at_startup"></span></label>
+      <label class="check"><input type="checkbox" id="start_minimized"><span data-i18n="prefs.start_minimized"></span></label>
+      <label class="check"><input type="checkbox" id="close_to_tray"><span data-i18n="prefs.close_to_tray"></span></label>
+      <label class="check"><input type="checkbox" id="notify_complete"><span data-i18n="prefs.notify_complete"></span></label>
+      <label class="check"><input type="checkbox" id="clipboard_monitor"><span data-i18n="prefs.clipboard_monitor"></span></label>
+      <div class="hint" data-i18n="prefs.clipboard_hint"></div>
+      <hr class="sep">
+      <div class="hint" style="margin-left:0" id="dataDir"></div>
+    </section>
+
+    <section data-pane="save" class="hidden">
+      <div class="row">
+        <label class="lbl" data-i18n="prefs.download_dir">İndirme klasörü</label>
+        <input class="field grow" id="download_dir">
+        <button class="btn" id="browseDir" data-i18n="btn.browse">Gözat</button>
+      </div>
+      <label class="check"><input type="checkbox" id="use_categories"><span data-i18n="prefs.use_categories"></span></label>
+      <table class="grid" id="cats">
+        <thead><tr><th data-i18n="prefs.category"></th><th data-i18n="prefs.extensions"></th><th data-i18n="prefs.folder"></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div class="hint" style="margin:8px 0 0" data-i18n="prefs.category_hint"></div>
+      <hr class="sep">
+      <div class="row">
+        <label class="lbl">ffmpeg</label>
+        <input class="field grow" id="ffmpeg_path" spellcheck="false" data-i18n-ph="prefs.ffmpeg_ph">
+      </div>
+      <div class="hint" style="margin-left:160px" data-i18n="prefs.ffmpeg_hint"></div>
+    </section>
+
+    <section data-pane="conn" class="hidden">
+      <div class="row">
+        <label class="lbl" data-i18n="prefs.max_connections">Bağlantı sayısı</label>
+        <select class="field small" id="max_connections"></select>
+      </div>
+      <div class="hint" data-i18n="prefs.connections_hint" style="margin-left:160px"></div>
+      <div class="row">
+        <label class="lbl"><label class="check" style="margin:0"><input type="checkbox" id="speed_limit_enabled"><span data-i18n="prefs.speed_limit"></span></label></label>
+        <input class="field small" id="speed_limit_kb" type="number" min="1"><span class="muted">KB/s</span>
+      </div>
+      <hr class="sep">
+      <div class="row"><label class="lbl" data-i18n="prefs.proxy">Vekil sunucu</label><input class="field grow" id="proxy" spellcheck="false" placeholder="socks5://127.0.0.1:9050"></div>
+      <div class="hint" style="margin-left:160px" data-i18n="prefs.proxy_hint"></div>
+      <div class="row"><label class="lbl">User-Agent</label><input class="field grow" id="user_agent" spellcheck="false" data-i18n-ph="prefs.ua_default"></div>
+      <div class="row"><label class="lbl" data-i18n="prefs.timeout">Zaman aşımı</label><input class="field small" id="timeout" type="number" min="5" max="300"><span class="muted" data-i18n="unit.seconds"></span></div>
+      <div class="row"><label class="lbl" data-i18n="prefs.ftp_tls">FTP şifreleme</label><select class="field grow" id="ftp_tls">
+        <option value="off" data-i18n="prefs.ftp_tls_off"></option>
+        <option value="if_available" data-i18n="prefs.ftp_tls_if"></option>
+        <option value="required" data-i18n="prefs.ftp_tls_req"></option>
+      </select></div>
+      <div class="hint" style="margin-left:160px" data-i18n="prefs.ftp_tls_hint"></div>
+    </section>
+
+    <section data-pane="browser" class="hidden">
+      <label class="check"><input type="checkbox" id="browser_enabled"><span data-i18n="prefs.browser_enabled"></span></label>
+      <label class="check"><input type="checkbox" id="browser_show_dialog"><span data-i18n="prefs.browser_show_dialog"></span></label>
+      <div class="row">
+        <label class="lbl" data-i18n="prefs.min_size">En küçük boyut</label>
+        <input class="field small" id="browser_min_size_kb" type="number" min="0"><span class="muted">KB</span>
+      </div>
+      <div class="row" style="align-items:flex-start">
+        <label class="lbl" data-i18n="prefs.capture_exts">Yakalanacak uzantılar</label>
+        <textarea class="field grow" id="capture_exts" rows="4"></textarea>
+      </div>
+      <div class="hint" style="margin-left:160px"><a href="#" id="resetExts" data-i18n="prefs.reset_default"></a></div>
+      <hr class="sep">
+      <div class="notice" style="margin:0"><span data-i18n="prefs.extension_hint"></span></div>
+    </section>
+
+    <section data-pane="torrent" class="hidden">
+      <div class="row"><label class="lbl" data-i18n="prefs.t_port">Dinleme portu</label><input class="field small" id="t_port" type="number" min="0" max="65535"><span class="muted" data-i18n="prefs.t_port_hint"></span></div>
+      <label class="check"><input type="checkbox" id="t_dht"><span data-i18n="prefs.t_dht"></span></label>
+      <label class="check"><input type="checkbox" id="t_lsd"><span data-i18n="prefs.t_lsd"></span></label>
+      <label class="check"><input type="checkbox" id="t_upnp"><span data-i18n="prefs.t_upnp"></span></label>
+      <div class="hint" style="margin-left:26px" data-i18n="prefs.t_upnp_hint"></div>
+      <hr class="sep">
+      <div class="row"><label class="lbl" data-i18n="prefs.t_ratio">Paylaşma oranı</label><input class="field small" id="t_ratio" type="number" min="0" max="100" step="0.1"><span class="muted" data-i18n="prefs.t_ratio_short"></span></div>
+      <div class="hint" style="margin-left:160px" data-i18n="prefs.t_ratio_hint"></div>
+      <div class="row"><label class="lbl" data-i18n="prefs.t_upload">Gönderme sınırı</label><input class="field small" id="t_upload_kb" type="number" min="0"><span class="muted" data-i18n="prefs.t_upload_hint"></span></div>
+      <hr class="sep">
+      <div class="row"><button class="btn" id="t_register" data-i18n="prefs.t_register"></button><span class="muted" id="t_register_msg"></span></div>
+      <div class="hint" style="margin-left:0" data-i18n="prefs.t_note"></div>
+    </section>
+
+    <section data-pane="quota" class="hidden">
+      <label class="check"><input type="checkbox" id="quota_enabled"><span data-i18n="prefs.quota_enabled"></span></label>
+      <div class="row">
+        <label class="lbl" data-i18n="prefs.quota_limit">Sınır</label>
+        <input class="field small" id="quota_mb" type="number" min="1"><span class="muted">MB /</span>
+        <input class="field small" id="quota_hours" type="number" min="1" max="24"><span class="muted" data-i18n="unit.hours"></span>
+      </div>
+      <div class="hint" style="margin-left:160px" data-i18n="prefs.quota_hint"></div>
+    </section>
+
+    <section data-pane="security" class="hidden">
+      <label class="check"><input type="checkbox" id="av_enabled"><span data-i18n="prefs.av_enabled"></span></label>
+      <div class="row"><label class="lbl" data-i18n="prefs.av_command">Komut</label><input class="field grow" id="av_command" spellcheck="false"></div>
+      <div class="hint" style="margin-left:160px"><span data-i18n="prefs.av_hint"></span> <a href="#" id="resetAv" data-i18n="prefs.reset_default"></a></div>
+      <hr class="sep">
+      <div class="hint" style="margin-left:0" data-i18n="prefs.privacy"></div>
+    </section>
+    <div class="error hidden" id="error"></div>
+  </div>
+  <div class="footer">
+    <button class="btn" id="cancel" data-i18n="btn.cancel">Vazgeç</button>
+    <button class="btn primary" id="save" data-i18n="btn.save">Kaydet</button>
+  </div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/prefs.js"></script>
+</body>
+</html>

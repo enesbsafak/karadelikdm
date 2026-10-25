@@ -1,0 +1,43 @@
+# Her itmede Windows ve macOS'ta derler ve tüm testleri çalıştırır. macOS yalnız burada doğrulanabilir:
+# C bağımlılıkları (ring, objc2) Apple SDK başlıklarını ister.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # tauri-build, externalBin olarak verilen native messaging yardımcısını hedef üçlüsüyle adlandırılmış ister
+      - name: Native messaging yardımcısı
+        shell: bash
+        run: |
+          cargo build --locked -p kdm-nmh
+          triple=$(rustc -vV | sed -n 's/^host: //p')
+          ext=""; [ "$RUNNER_OS" = "Windows" ] && ext=".exe"
+          mkdir -p src-tauri/binaries
+          cp "target/debug/karadelikdm-nmh$ext" "src-tauri/binaries/karadelikdm-nmh-$triple$ext"
+
+      - name: Clippy
+        run: cargo clippy --locked --workspace --all-targets -- -D warnings
+
+      - name: Rust testleri
+        run: cargo test --locked --workspace
+
+      - name: Uzantı testleri
+        working-directory: extension
+        run: npm test

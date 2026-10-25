@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Karadelik Download Manager</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/dm.css">
+</head>
+<body data-esc-close="1">
+<div class="page">
+  <div class="dialog">
+    <h1 id="title"></h1>
+    <div class="message" id="message"></div>
+    <div class="countdown hidden" id="countdown"></div>
+    <pre class="hidden" id="text"></pre>
+    <form id="form"></form>
+    <div class="error hidden" id="error"></div>
+  </div>
+  <div class="footer">
+    <button class="btn" id="cancel" data-i18n="btn.cancel">Vazgeç</button>
+    <button class="btn primary" id="ok" data-i18n="btn.ok">Tamam</button>
+  </div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/dialog.js"></script>
+</body>
+</html>

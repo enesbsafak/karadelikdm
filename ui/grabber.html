@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Karadelik Download Manager</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/dm.css">
+</head>
+<body data-esc-close="1">
+<div class="page">
+  <div class="content" id="form">
+    <div class="row"><label class="lbl" data-i18n="grab.start_url">Başlangıç adresi</label><input class="field grow" id="start_url" spellcheck="false" placeholder="https://"></div>
+    <div class="row">
+      <label class="lbl" data-i18n="grab.depth">Derinlik</label>
+      <input class="field small" id="same_site_depth" type="number" min="0" max="20"><span class="muted" data-i18n="grab.same_site"></span>
+      <input class="field small" id="other_site_depth" type="number" min="0" max="5"><span class="muted" data-i18n="grab.other_sites"></span>
+    </div>
+    <div class="row"><label class="lbl" data-i18n="grab.patterns">Dosya türleri</label><input class="field grow" id="file_patterns" spellcheck="false"></div>
+    <div class="row"><label class="lbl" data-i18n="grab.exclude">Hariç</label><input class="field grow" id="exclude_patterns" spellcheck="false" placeholder="*.exe"></div>
+    <div class="row"><label class="lbl" data-i18n="grab.paths">Yollar</label>
+      <input class="field grow" id="include_paths" spellcheck="false" data-i18n-ph="grab.include_ph">
+      <input class="field grow" id="exclude_paths" spellcheck="false" data-i18n-ph="grab.exclude_ph">
+    </div>
+    <div class="row">
+      <label class="lbl" data-i18n="grab.size">Boyut (KB)</label>
+      <input class="field small" id="min_size_kb" type="number" min="0"><span class="muted">–</span>
+      <input class="field small" id="max_size_kb" type="number" min="0"><span class="muted" data-i18n="grab.zero_unlimited"></span>
+    </div>
+    <div class="row">
+      <label class="lbl" data-i18n="grab.max_pages">En çok sayfa</label>
+      <input class="field small" id="max_pages" type="number" min="1">
+      <label class="muted" data-i18n="grab.delay" style="margin-left:10px">Bekleme</label>
+      <input class="field small" id="delay_ms" type="number" min="0"><span class="muted">ms</span>
+    </div>
+    <label class="check"><input type="checkbox" id="respect_robots"><span data-i18n="grab.robots"></span></label>
+    <div class="statusbar" style="margin:6px 0"><span class="msg" id="status"></span><div class="progress hidden" id="progress"><div></div></div></div>
+    <div class="q-files" id="results" style="min-height:150px;max-height:230px"></div>
+    <div class="error hidden" id="error"></div>
+  </div>
+  <div class="footer">
+    <label class="check" style="margin:0"><input type="checkbox" id="all"><span data-i18n="grab.select_all"></span></label>
+    <span class="note" id="note"></span>
+    <button class="btn" id="startBtn" data-i18n="grab.start">Taramayı başlat</button>
+    <button class="btn" id="queueBtn" data-i18n="add.to_queue">Kuyruğa ekle</button>
+    <button class="btn primary" id="nowBtn" data-i18n="add.now">Şimdi indir</button>
+  </div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/grabber.js"></script>
+</body>
+</html>

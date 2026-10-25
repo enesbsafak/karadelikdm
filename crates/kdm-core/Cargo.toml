@@ -1,0 +1,34 @@
+[package]
+name = "kdm-core"
+description = "Karadelik Download Manager indirme motoru"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+# gzip/brotli kapalı: Range ile parçalı indirmede ham baytlar gerekir
+ureq = { version = "3", default-features = false, features = ["rustls", "platform-verifier", "socks-proxy"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+parking_lot = "0.12"
+anyhow = "1"
+percent-encoding = "2"
+url = "2"
+sha2 = "0.10"
+sha1 = "0.10"
+md-5 = "0.10"
+hex = "0.4"
+base64 = "0.22"
+chrono = "0.4"
+log = "0.4"
+kdm-ftp = { path = "../kdm-ftp" }
+kdm-media = { path = "../kdm-media" }
+kdm-torrent = { path = "../kdm-torrent" }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_Storage_FileSystem", "Win32_System_IO", "Win32_System_Ioctl"] }
+
+[dev-dependencies]
+# Torrent testlerinde yerel paylaşıcı (seeder)
+librqbit = { version = "9.0.1", default-features = false }
+tokio = { version = "1", features = ["rt-multi-thread"] }

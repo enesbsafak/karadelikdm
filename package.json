@@ -1,0 +1,14 @@
+{
+  "name": "karadelikdm",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Karadelik Download Manager - Windows ve macOS için indirme yöneticisi",
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.2"
+  }
+}

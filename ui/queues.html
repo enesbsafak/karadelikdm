@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Karadelik Download Manager</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/dm.css">
+</head>
+<body data-esc-close="1">
+<div class="q-page">
+  <nav class="q-list" id="qlist"></nav>
+  <div class="q-edit">
+    <div class="content">
+      <div class="row"><label class="lbl" data-i18n="queues.name">Ad</label><input class="field grow" id="qname"></div>
+      <div class="row">
+        <label class="lbl" data-i18n="queues.parallel">Aynı anda</label>
+        <input class="field small" id="parallel" type="number" min="1" max="16"><span class="muted" data-i18n="queues.files"></span>
+      </div>
+      <div class="row">
+        <label class="lbl" data-i18n="queues.retry">Yeniden deneme</label>
+        <input class="field small" id="retry" type="number" min="0" max="20"><span class="muted" data-i18n="queues.times"></span>
+      </div>
+      <hr class="sep">
+      <label class="check"><input type="checkbox" id="schedOn"><span data-i18n="queues.schedule"></span></label>
+      <div class="row">
+        <label class="lbl" data-i18n="queues.start_at">Başlama</label><input class="field small" id="startAt" type="time">
+        <label class="muted" data-i18n="queues.stop_at" style="margin-left:12px">Durma</label><input class="field small" id="stopAt" type="time">
+      </div>
+      <div class="row"><label class="lbl" data-i18n="queues.days">Günler</label><div class="days" id="days"></div></div>
+      <label class="check"><input type="checkbox" id="once"><span data-i18n="queues.once"></span></label>
+      <div class="row">
+        <label class="lbl" data-i18n="queues.after">Bitince</label>
+        <select class="field grow" id="after">
+          <option value="none" data-i18n="after.none"></option>
+          <option value="exit" data-i18n="after.exit"></option>
+          <option value="sleep" data-i18n="after.sleep"></option>
+          <option value="hibernate" data-i18n="after.hibernate"></option>
+          <option value="shutdown" data-i18n="after.shutdown"></option>
+        </select>
+      </div>
+      <hr class="sep">
+      <div class="row" style="margin-bottom:0">
+        <span class="muted" style="flex:1" data-i18n="queues.contents"></span>
+        <button class="btn" id="up">▲</button><button class="btn" id="down">▼</button>
+      </div>
+      <div class="q-files" id="files"></div>
+      <div class="error hidden" id="error"></div>
+    </div>
+    <div class="footer">
+      <button class="btn" id="runBtn"></button>
+      <span class="note"></span>
+      <button class="btn" id="close" data-i18n="btn.close">Kapat</button>
+      <button class="btn primary" id="save" data-i18n="btn.save">Kaydet</button>
+    </div>
+  </div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/queues.js"></script>
+</body>
+</html>

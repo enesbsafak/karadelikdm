@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Karadelik Download Manager</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/dm.css">
+</head>
+<body>
+<div class="app" id="app">
+  <header class="titlebar" data-tauri-drag-region>
+    <div class="brand" data-tauri-drag-region>
+      <img src="img/logo.png" alt="" draggable="false">
+      <span class="name" data-tauri-drag-region>Karadelik DM</span>
+    </div>
+    <div class="title-spacer" data-tauri-drag-region></div>
+    <div class="title-tools">
+      <span class="chip" id="limitChip" data-i18n-title="ui.speed_limit"></span>
+      <span class="chip" id="clipChip" data-i18n-title="ui.clipboard_monitor"></span>
+      <button class="icon-btn" id="prefsBtn" data-i18n-title="ui.prefs"></button>
+      <button class="icon-btn" id="aboutBtn" data-i18n-title="ui.about"></button>
+      <button class="icon-btn win-btn" id="minBtn" data-i18n-title="ui.minimize">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/></svg>
+      </button>
+      <button class="icon-btn win-btn" id="maxBtn" data-i18n-title="ui.maximize">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
+      </button>
+      <button class="icon-btn win-btn close" id="closeBtn" data-i18n-title="ui.close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <button class="tool primary" id="addBtn"><span class="ico" data-icon="add"></span><span data-i18n="tb.add">Ekle</span></button>
+    <button class="tool" id="resumeBtn"><span class="ico" data-icon="play"></span><span data-i18n="tb.resume">Devam</span></button>
+    <button class="tool" id="stopBtn"><span class="ico" data-icon="pause"></span><span data-i18n="tb.stop">Durdur</span></button>
+    <button class="tool" id="stopAllBtn"><span class="ico" data-icon="stop"></span><span data-i18n="tb.stop_all">Tümünü durdur</span></button>
+    <button class="tool" id="removeBtn"><span class="ico" data-icon="trash"></span><span data-i18n="tb.remove">Sil</span></button>
+    <div class="tool-sep"></div>
+    <button class="tool" id="queueBtn"><span class="ico" data-icon="queue"></span><span id="queueLabel" data-i18n="tb.start_queue">Kuyruğu başlat</span></button>
+    <button class="tool" id="schedBtn"><span class="ico" data-icon="clock"></span><span data-i18n="tb.scheduler">Zamanlayıcı</span></button>
+    <button class="tool" id="grabBtn"><span class="ico" data-icon="grabber"></span><span data-i18n="tb.grabber">Grabber</span></button>
+    <input class="field search" id="search" data-i18n-ph="ui.search" type="search">
+  </div>
+
+  <div class="notice hidden" id="updateNotice">
+    <span id="updateText"></span>
+    <button class="btn primary" id="updateBtn" data-i18n="btn.update">Güncelle</button>
+  </div>
+  <div class="notice hidden" id="quotaNotice"><span id="quotaText"></span></div>
+
+  <div class="body">
+    <nav class="sidebar" id="sidebar"></nav>
+    <div class="listwrap" id="listwrap">
+      <div class="list" id="list">
+        <table class="dl">
+          <colgroup>
+            <col style="width:auto"><col style="width:84px"><col style="width:140px"><col style="width:90px"><col style="width:80px"><col style="width:110px"><col style="width:84px">
+          </colgroup>
+          <thead><tr id="thead">
+            <th data-sort="name" data-i18n="col.name">Ad</th>
+            <th data-sort="size" class="num" data-i18n="col.size">Boyut</th>
+            <th data-sort="progress" data-i18n="col.progress">İlerleme</th>
+            <th data-sort="speed" class="num" data-i18n="col.speed">Hız</th>
+            <th data-sort="eta" class="num" data-i18n="col.eta">Kalan</th>
+            <th data-sort="status" data-i18n="col.status">Durum</th>
+            <th data-sort="added" class="num" data-i18n="col.added">Eklenme</th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="empty-list hidden" id="emptyList">
+          <img src="img/logo.png" width="56" alt="">
+          <h2 data-i18n="ui.empty_title"></h2>
+          <div data-i18n="ui.empty_text"></div>
+        </div>
+      </div>
+      <div class="details hidden" id="details"></div>
+    </div>
+  </div>
+
+  <div class="statusbar main-status">
+    <span class="total" id="total"></span>
+    <span class="msg" id="status"></span>
+  </div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

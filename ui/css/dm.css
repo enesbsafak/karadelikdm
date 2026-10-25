@@ -1,0 +1,134 @@
+/* Karadelik Download Manager'a özgü bileşenler. Temel tasarım dili app.css'te (KaradelikDev ile ortak). */
+
+.brand .name { font-weight: 600; letter-spacing: .2px; }
+
+.toolbar {
+  display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+  border-bottom: 1px solid var(--line); background: var(--bg-2);
+}
+.tool {
+  display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 6px;
+  background: var(--bg-3); border: 1px solid var(--line); cursor: pointer; font-size: 12px; white-space: nowrap;
+}
+.tool:hover { border-color: #3d3d50; background: #20202b; }
+.tool:disabled { opacity: .4; cursor: default; }
+.tool svg { width: 15px; height: 15px; color: var(--accent-2); flex-shrink: 0; }
+.tool.primary { background: linear-gradient(135deg, #ff8a1f, #ff5f1f); border-color: transparent; color: var(--accent-ink); font-weight: 600; }
+.tool.primary svg { color: var(--accent-ink); }
+.tool-sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+.search { margin-left: auto; width: 220px; }
+
+.body { flex: 1; display: flex; min-height: 0; }
+.sidebar { width: 190px; flex-shrink: 0; overflow: auto; border-right: 1px solid var(--line); background: var(--bg-2); padding: 8px 6px; }
+.side-title { font-size: 10.5px; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin: 10px 8px 4px; }
+.side-title:first-child { margin-top: 2px; }
+.side-item { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 12.5px; }
+.side-item:hover { background: var(--bg-3); }
+.side-item.active { background: rgba(255, 138, 31, .12); color: var(--accent-2); }
+.side-item svg { width: 15px; height: 15px; color: var(--muted); flex-shrink: 0; }
+.side-item.active svg { color: var(--accent-2); }
+.side-item .count { margin-left: auto; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.qdot { width: 7px; height: 7px; border-radius: 50%; background: #3a3a48; flex-shrink: 0; }
+.qdot.on { background: var(--ok); box-shadow: 0 0 6px rgba(61, 220, 132, .7); }
+
+.listwrap { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.list { flex: 1; overflow: auto; }
+.list::-webkit-scrollbar, .sidebar::-webkit-scrollbar, .q-files::-webkit-scrollbar { width: 8px; }
+.list::-webkit-scrollbar-thumb, .sidebar::-webkit-scrollbar-thumb, .q-files::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+table.dl { width: 100%; border-collapse: collapse; table-layout: fixed; }
+table.dl th {
+  position: sticky; top: 0; z-index: 1; background: var(--bg); text-align: left; font-weight: 500; color: var(--muted);
+  font-size: 11px; text-transform: uppercase; letter-spacing: .6px; padding: 7px 8px; border-bottom: 1px solid var(--line);
+  cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+table.dl th:hover { color: var(--text); }
+table.dl th.sorted { color: var(--accent-2); }
+table.dl th.num { text-align: right; }
+table.dl td { padding: 6px 8px; border-bottom: 1px solid #1c1c26; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+table.dl tr.dlrow:hover td { background: var(--bg-2); }
+table.dl tr.dlrow.sel td { background: rgba(255, 138, 31, .12); }
+table.dl td.num { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+.fname { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.fname span { overflow: hidden; text-overflow: ellipsis; }
+.fname svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--muted); }
+.st { font-size: 12px; color: var(--muted); }
+.st.downloading { color: var(--accent-2); }
+.st.completed { color: var(--ok); }
+.st.error { color: var(--err); }
+.st.queued { color: var(--warn); }
+.bar { position: relative; height: 14px; border-radius: 4px; background: var(--bg-3); overflow: hidden; border: 1px solid var(--line); }
+.bar > div { height: 100%; background: linear-gradient(90deg, #ff8a1f, #ffb347); width: 0; transition: width .4s; }
+.bar.done > div { background: var(--ok); }
+.bar.err > div { background: rgba(255, 93, 93, .5); }
+.bar.unknown > div { width: 30% !important; animation: indet 1.1s infinite ease-in-out; }
+.bar > span { position: absolute; inset: 0; display: grid; place-items: center; font-size: 10.5px; color: #fff; text-shadow: 0 0 3px var(--bg); font-variant-numeric: tabular-nums; }
+
+.details { border-top: 1px solid var(--line); background: var(--bg-2); padding: 10px 12px; flex-shrink: 0; }
+.details .head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.details .head strong { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.details .grid2 { display: grid; grid-template-columns: 96px 1fr 96px 1fr; gap: 4px 10px; font-size: 12px; }
+.details .grid2 label { color: var(--muted); }
+.details .grid2 span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; user-select: text; }
+.details .grid2 .wide { grid-column: 2 / -1; }
+.segbar { position: relative; height: 18px; border-radius: 4px; background: var(--bg-2); border: 1px solid var(--line); overflow: hidden; margin: 8px 0 3px; }
+.segbar > div { position: absolute; top: 0; bottom: 0; background: var(--accent); }
+.segbar > i { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--muted); }
+.seglegend { font-size: 11px; color: var(--muted); }
+
+.empty-list { text-align: center; color: var(--muted); padding: 60px 20px; }
+.empty-list h2 { color: var(--text); font-size: 15px; margin: 10px 0 6px; }
+.empty-list kbd { border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; background: var(--bg-3); font: inherit; }
+.dropzone { outline: 2px dashed var(--accent); outline-offset: -6px; }
+
+.ctx {
+  position: fixed; z-index: 50; min-width: 210px; padding: 4px; border-radius: 8px; background: var(--bg-2);
+  border: 1px solid #3a3a4c; box-shadow: 0 10px 30px var(--bg); font-size: 12.5px;
+}
+.ctx .it { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 6px 10px; border-radius: 5px; cursor: pointer; white-space: nowrap; }
+.ctx .it:hover { background: rgba(255, 138, 31, .12); }
+.ctx .it.dis { opacity: .4; pointer-events: none; }
+.ctx .it.danger { color: #ffb3b3; }
+.ctx .it kbd { color: var(--muted); font-size: 11px; font-family: inherit; }
+.ctx .sep { height: 1px; background: var(--line); margin: 4px 2px; }
+.ctx .sub { position: relative; }
+.ctx .sub > .ctx { display: none; position: absolute; left: calc(100% - 4px); top: -5px; }
+.ctx .sub:hover > .ctx { display: block; }
+
+.statusbar.main-status { margin: 0; padding: 6px 12px; border-top: 1px solid var(--line); background: var(--bg-2); }
+.statusbar .total { font-variant-numeric: tabular-nums; color: var(--text); }
+.chip.on { color: var(--accent-2); border-color: rgba(255, 138, 31, .45); }
+
+/* ekleme penceresi */
+.add-info { color: var(--muted); font-size: 12px; min-height: 16px; margin: -4px 0 10px 160px; }
+.add-info.err { color: var(--err); }
+details.more { margin-top: 4px; }
+details.more summary { cursor: pointer; color: var(--muted); margin-bottom: 10px; }
+textarea.field { resize: vertical; min-height: 90px; font: 12px/1.45 Consolas, "Cascadia Mono", "SF Mono", Menlo, monospace; user-select: text; }
+
+/* kuyruklar */
+.q-page { display: flex; height: 100vh; }
+.q-list { width: 210px; flex-shrink: 0; border-right: 1px solid var(--line); background: var(--bg-2); padding: 10px 6px; overflow: auto; display: flex; flex-direction: column; gap: 2px; }
+.q-list .btn { margin: 8px 8px 0; }
+.q-edit { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.days { display: flex; gap: 4px; flex-wrap: wrap; }
+.days label { display: flex; align-items: center; gap: 4px; padding: 3px 7px; border: 1px solid var(--line); border-radius: 6px; cursor: pointer; font-size: 12px; }
+.days input { accent-color: var(--accent); }
+.q-files { flex: 1; overflow: auto; border: 1px solid var(--line); border-radius: 6px; margin-top: 6px; min-height: 120px; }
+.q-files .item { display: flex; gap: 8px; align-items: center; padding: 5px 8px; border-bottom: 1px solid #1c1c26; font-size: 12px; cursor: pointer; }
+.q-files .item.sel { background: rgba(255, 138, 31, .12); }
+.q-files .item .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.q-files .item input { accent-color: var(--accent); flex-shrink: 0; }
+.countdown { font-size: 34px; font-weight: 600; text-align: center; color: var(--accent-2); font-variant-numeric: tabular-nums; margin: 8px 0; }
+.chip { display: inline-flex; align-items: center; gap: 4px; }
+.chip svg { width: 12px; height: 12px; flex-shrink: 0; }
+.icon-btn svg { width: 16px; height: 16px; }
+
+/* Tüm kaydırma çubukları ana listeyle aynı koyu stilde (KaradelikDev yalnız .main'i biçimlendirir) */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a4c; }
+::-webkit-scrollbar-corner { background: transparent; }
+
+/* Hata metni her pencerede (app.css'te yalnız .dialog içinde tanımlı) */
+.error { color: var(--err); margin-top: 6px; white-space: pre-wrap; }
