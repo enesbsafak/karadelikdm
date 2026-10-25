@@ -47,6 +47,7 @@ pub fn build(app: &AppHandle) -> tauri::Result<Menu<Wry>> {
         .item(&limit)
         .item(&CheckMenuItemBuilder::with_id("clipboard_toggle", t("tray.clipboard")).checked(s.clipboard_monitor).build(app)?)
         .separator()
+        .item(&MenuItemBuilder::with_id("update_check", t("tray.check_updates")).build(app)?)
         .item(&MenuItemBuilder::with_id("prefs", t("tray.prefs")).build(app)?)
         .item(&MenuItemBuilder::with_id("exit", t("tray.exit")).build(app)?)
         .build()

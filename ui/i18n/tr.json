@@ -325,5 +325,16 @@
   "prefs.ext_step3": "\"Paketlenmemiş öğe yükle\"ye basın.",
   "prefs.ext_step4": "Açılan pencerede adres çubuğuna yapıştırıp (Ctrl+V) klasörü seçin. Yol panoya kopyalandı:",
   "prefs.ext_copy": "Kopyala",
-  "prefs.ext_keep": "Bu klasörü silmeyin; tarayıcı uzantıyı oradan çalıştırır. Uzantı mağazada yayınlanınca bu düğme mağaza sayfasını açacak."
+  "prefs.ext_keep": "Bu klasörü silmeyin; tarayıcı uzantıyı oradan çalıştırır. Uzantı mağazada yayınlanınca bu düğme mağaza sayfasını açacak.",
+  "prefs.update_check": "Güncellemeleri otomatik denetle (açılışta ve günde bir)",
+  "prefs.check_now": "Şimdi denetle",
+  "prefs.checking": "Denetleniyor…",
+  "prefs.version": "Bu sürüm: {0}",
+  "prefs.up_to_date": "Güncelsiniz ({0}).",
+  "prefs.update_found": "Yeni sürüm: {0} (bu sürüm {1}).",
+  "prefs.check_failed": "Denetlenemedi: {0}",
+  "prefs.update_now": "Güncelle",
+  "tray.check_updates": "Güncellemeleri denetle",
+  "msg.up_to_date": "Karadelik Download Manager güncel ({0}).",
+  "msg.update_check_failed": "Güncelleme denetlenemedi: {0}"
 }

@@ -80,14 +80,31 @@ pub fn check() -> Result<Option<String>> {
     validate(&l)?;
     let newer = is_newer(&l.version, env!("CARGO_PKG_VERSION"));
     let v = newer.then(|| l.version.clone());
+    log(&format!("Güncelleme denetimi: son sürüm {}, bu sürüm {}", l.version, env!("CARGO_PKG_VERSION")));
     *AVAILABLE.lock() = newer.then_some(l);
     Ok(v)
 }
 
-/// Açılıştan kısa süre sonra ve günde bir.
+/// Elle denetim (Tercihler, tepsi): sonuç kullanıcıya her durumda bildirilir.
+pub fn check_now_and_notify() {
+    match check() {
+        Ok(Some(v)) => {
+            kcore::emit("state", ());
+            let _ = v;
+            crate::actions::dispatch("app_update");
+        }
+        Ok(None) => kcore::notify(&crate::i18n::tf("msg.up_to_date", &[env!("CARGO_PKG_VERSION")])),
+        Err(e) => {
+            log(&format!("Güncelleme denetimi: {e:#}"));
+            kcore::notify(&crate::i18n::tf("msg.update_check_failed", &[&format!("{e:#}")]));
+        }
+    }
+}
+
+/// Açılıştan kısa süre sonra (ağın hazır olması için birkaç saniye) ve günde bir.
 pub fn start_background() {
     std::thread::spawn(|| {
-        std::thread::sleep(std::time::Duration::from_secs(30));
+        std::thread::sleep(std::time::Duration::from_secs(5));
         let mut notified = String::new();
         loop {
             if kcore::settings().update_check {

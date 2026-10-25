@@ -90,6 +90,9 @@ pub fn dispatch_values(id: &str, values: &[(String, String)]) {
             }
         }
         "app_update_go" => crate::updater::install(),
+        "update_check" => {
+            std::thread::spawn(crate::updater::check_now_and_notify);
+        }
         "about" => windows::info(
             "Karadelik Download Manager",
             &tf("about.text", &[env!("CARGO_PKG_VERSION")]),

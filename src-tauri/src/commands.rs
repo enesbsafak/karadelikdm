@@ -336,6 +336,25 @@ pub struct SettingsView {
     pub default_av: String,
     pub default_capture: &'static str,
     pub data_dir: String,
+    pub version: &'static str,
+}
+
+#[derive(Serialize)]
+pub struct UpdateView {
+    current: &'static str,
+    /// Daha yeni sürüm varsa numarası
+    latest: Option<String>,
+}
+
+/// Tercihler > Genel > "Şimdi denetle".
+#[tauri::command]
+pub async fn update_check_now() -> Res<UpdateView> {
+    let r = blocking(crate::updater::check).await?;
+    let latest = r.map_err(|e| format!("{e:#}"))?;
+    if latest.is_some() {
+        kcore::emit("state", ());
+    }
+    Ok(UpdateView { current: env!("CARGO_PKG_VERSION"), latest })
 }
 
 #[tauri::command]
@@ -346,6 +365,7 @@ pub fn settings_get() -> SettingsView {
         default_av: crate::settings::default_av_command(),
         default_capture: crate::settings::DEFAULT_CAPTURE,
         data_dir: kcore::core().paths.data.to_string_lossy().into_owned(),
+        version: env!("CARGO_PKG_VERSION"),
     }
 }
 

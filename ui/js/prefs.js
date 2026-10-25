@@ -3,7 +3,7 @@ let meta = null;
 let s = null;
 
 const CHECKS = ['run_at_startup', 'start_minimized', 'close_to_tray', 'notify_complete', 'clipboard_monitor',
-  'use_categories', 'speed_limit_enabled', 'browser_enabled', 'browser_show_dialog', 'av_enabled'];
+  'use_categories', 'speed_limit_enabled', 'browser_enabled', 'browser_show_dialog', 'av_enabled', 'update_check'];
 
 function fill() {
   for (const [code, name] of [['', T('prefs.system_language')], ...meta.languages]) {
@@ -125,6 +125,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('resetAv').addEventListener('click', (e) => { e.preventDefault(); $('av_command').value = meta.default_av; });
   $('cancel').addEventListener('click', () => currentWindow().close());
   renderExt();
+  $('updateResult').textContent = TF('prefs.version', meta.version || '');
+  $('checkNow').addEventListener('click', async () => {
+    const btn = $('checkNow');
+    btn.disabled = true;
+    $('updateResult').textContent = T('prefs.checking');
+    $('updateNow').classList.add('hidden');
+    try {
+      const r = await invoke('update_check_now');
+      if (r.latest) {
+        $('updateResult').textContent = TF('prefs.update_found', r.latest, r.current);
+        $('updateNow').classList.remove('hidden');
+      } else {
+        $('updateResult').textContent = TF('prefs.up_to_date', r.current);
+      }
+    } catch (e) {
+      $('updateResult').textContent = TF('prefs.check_failed', String(e));
+    } finally {
+      btn.disabled = false;
+    }
+  });
+  $('updateNow').addEventListener('click', () => invoke('run_action', { id: 'app_update' }));
   setInterval(renderExt, 3000);
   $('copyPage').addEventListener('click', () => navigator.clipboard.writeText($('extPage').textContent).catch(() => {}));
   $('copyPath').addEventListener('click', () => navigator.clipboard.writeText($('extPath').textContent).catch(() => {}));

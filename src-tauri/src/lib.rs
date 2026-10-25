@@ -82,6 +82,7 @@ pub fn run() {
             commands::dialog_close,
             commands::confirm_remove,
             commands::open_add_url,
+            commands::update_check_now,
             torrent::torrent_inspect,
             torrent::torrent_inspect_cancel,
             torrent::pick_torrent_file,

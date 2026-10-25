@@ -325,5 +325,16 @@
   "prefs.ext_step3": "Click \"Load unpacked\".",
   "prefs.ext_step4": "In the window that opens, paste into its address bar (Ctrl+V) and select the folder. The path has been copied:",
   "prefs.ext_copy": "Copy",
-  "prefs.ext_keep": "Keep this folder; the browser runs the extension from it. Once the extension is in the store, this button will open the store page."
+  "prefs.ext_keep": "Keep this folder; the browser runs the extension from it. Once the extension is in the store, this button will open the store page.",
+  "prefs.update_check": "Check for updates automatically (at start and once a day)",
+  "prefs.check_now": "Check now",
+  "prefs.checking": "Checking…",
+  "prefs.version": "This version: {0}",
+  "prefs.up_to_date": "You are up to date ({0}).",
+  "prefs.update_found": "New version: {0} (this version {1}).",
+  "prefs.check_failed": "Could not check: {0}",
+  "prefs.update_now": "Update",
+  "tray.check_updates": "Check for updates",
+  "msg.up_to_date": "Karadelik Download Manager is up to date ({0}).",
+  "msg.update_check_failed": "Could not check for updates: {0}"
 }
