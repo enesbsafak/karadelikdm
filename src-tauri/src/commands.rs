@@ -103,6 +103,7 @@ fn dl_action_sync(ids: &[u64], action: &str) -> Res<()> {
                 e.start(id);
             }
             "stop" => e.stop(id),
+            "seed" => e.seed(id).map_err(err)?,
             "remove" => e.remove(id, false).map_err(err)?,
             "restart" => {
                 e.stop(id);

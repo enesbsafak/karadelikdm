@@ -298,13 +298,13 @@
   "prefs.t_upnp": "Open the port on the router automatically (UPnP)",
   "prefs.t_upnp_hint": "Downloads work with this off; turning it on brings more incoming peers but opens a router port by itself.",
   "prefs.t_ratio": "Seed ratio",
-  "prefs.t_ratio_hint": "After finishing, keep seeding until uploaded / size reaches this ratio; then the files are released.",
+  "prefs.t_ratio_hint": "Seeding stops and the files are released once uploaded / size reaches this ratio.",
   "prefs.t_upload": "Upload limit",
   "prefs.t_upload_hint": "KB/s, 0: unlimited",
   "prefs.t_register": "Make default for magnet and .torrent",
   "prefs.t_registered": "Registered. The browser may ask for permission on the first magnet link.",
   "prefs.t_note": "Port, DHT, UPnP and local network settings take effect after a restart. In BitTorrent your IP address is visible to the peers you connect to. The torrent session does not open until the first torrent starts.",
-  "prefs.t_ratio_short": "0: do not seed",
+  "prefs.t_ratio_short": "0: until you stop it",
   "row.peers": "{0} peers",
   "row.left": "{0} left",
   "det.peers_label": "Peers",
@@ -337,5 +337,9 @@
   "tray.check_updates": "Check for updates",
   "msg.up_to_date": "Karadelik Download Manager is up to date ({0}).",
   "msg.update_check_failed": "Could not check for updates: {0}",
-  "prefs.ext_store_note": "The store page is open in the browser: click \"Add to Chrome\" (Edge first asks to \"Allow extensions from other stores\"). If you installed a copy by hand earlier, remove it on the extensions page; with both, downloads are caught twice."
+  "prefs.ext_store_note": "The store page is open in the browser: click \"Add to Chrome\" (Edge first asks to \"Allow extensions from other stores\"). If you installed a copy by hand earlier, remove it on the extensions page; with both, downloads are caught twice.",
+  "ctx.seed": "Seed",
+  "ctx.seed_stop": "Stop seeding",
+  "prefs.t_seed_after": "Keep seeding when a torrent finishes",
+  "prefs.t_seed_hint": "When off, start seeding a finished torrent yourself with \"Seed\" on its row. While seeding, the files are kept open; stop seeding before running files such as installers."
 }

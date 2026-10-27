@@ -67,6 +67,7 @@ function statusText(d) {
   if (t && d.status === 'downloading' && t.resolving) return T('st.t_resolving');
   if (t && d.status === 'downloading' && t.checking) return T('st.t_checking');
   if (t && d.status === 'completed' && t.seeding) return T('st.seeding');
+  if (t && d.status === 'completed' && t.checking) return T('st.t_checking');
   if (d.status === 'downloading') return T('st.downloading');
   if (d.status === 'error') return T('st.error');
   if (d.status === 'queued') return T('st.queued');
@@ -320,6 +321,11 @@ function renderDetails() {
     box.append(bar, el('div', { class: 'seglegend' }, TF('det.segments', d.segments.length)));
   }
   const actions = el('div', { class: 'insp-actions' }, el('button', { class: 'btn', type: 'button', onclick: () => act('folder') }, T('ctx.folder')));
+  if (tor && d.status === 'completed') {
+    actions.append(tor.seeding
+      ? el('button', { class: 'btn', type: 'button', onclick: () => act('stop') }, T('ctx.seed_stop'))
+      : el('button', { class: 'btn', type: 'button', disabled: tor.checking, onclick: () => act('seed') }, T('ctx.seed')));
+  }
   if (d.status === 'completed') actions.append(el('button', { class: 'btn primary', type: 'button', onclick: () => act('open') }, T('ctx.open')));
   else if (d.status === 'downloading' || d.status === 'queued') actions.append(el('button', { class: 'btn primary', type: 'button', onclick: () => act('stop') }, T('ctx.stop')));
   else actions.append(el('button', { class: 'btn primary', type: 'button', onclick: () => act('start') }, T('ctx.start')));
@@ -330,7 +336,7 @@ function renderDetails() {
 function renderToolbar() {
   const sel = selected();
   const canStart = sel.some((d) => d.status !== 'completed' && d.status !== 'downloading');
-  const canStop = sel.some((d) => d.status === 'downloading' || d.status === 'queued');
+  const canStop = sel.some((d) => d.status === 'downloading' || d.status === 'queued' || (d.torrent && d.torrent.seeding));
   $('resumeBtn').disabled = !canStart;
   $('stopBtn').disabled = !canStop;
   $('removeBtn').disabled = sel.length === 0;
@@ -436,6 +442,11 @@ function showContextMenu(x, y) {
     sep(),
     menuItem(T('ctx.start'), () => act('start'), { disabled: !any((d) => d.status !== 'completed' && d.status !== 'downloading') }),
     menuItem(T('ctx.stop'), () => act('stop'), { disabled: !any((d) => d.status === 'downloading' || d.status === 'queued') }),
+    ...(any((d) => d.torrent && d.status === 'completed') ? [
+      any((d) => d.torrent && d.torrent.seeding)
+        ? menuItem(T('ctx.seed_stop'), () => act('stop'))
+        : menuItem(T('ctx.seed'), () => act('seed'), { disabled: !any((d) => d.torrent && d.status === 'completed' && !d.torrent.checking) }),
+    ] : []),
     menuItem(T('ctx.restart'), () => act('restart')),
     submenu(T('ctx.add_to_queue'), queues),
     submenu(T('ctx.speed_limit'), limits),

@@ -509,3 +509,30 @@ fn refused_connection_is_retried_when_download_has_data() {
     e.engine.stop(id);
     assert_eq!(wait(&e, id, 30).0, Status::Stopped);
 }
+
+/// Bitmiş dosyayı paylaşımsız açmak: motorda açık tutamaç kalırsa Windows "dosya kullanılıyor" der
+/// (indirilen kurulum programı çalıştırılamaz).
+#[cfg(windows)]
+fn assert_not_locked(e: &Env, id: u64) {
+    use std::os::windows::fs::OpenOptionsExt;
+    let p = e.engine.record(id).unwrap().target_path();
+    let r = std::fs::OpenOptions::new().read(true).write(true).share_mode(0).open(&p);
+    assert!(r.is_ok(), "bitmiş dosya hâlâ açık: {} ({:?})", p.display(), r.err());
+}
+
+#[cfg(windows)]
+#[test]
+fn completed_file_is_not_left_open() {
+    for (name, cut, no_length) in [("lock-multi", 0, false), ("lock-cut", 3, false), ("lock-stream", 0, true)] {
+        let d = data(4 * 1024 * 1024 + 7);
+        let s = server(d.clone());
+        s.cfg.throttle.store(2 * 1024 * 1024, Ordering::Relaxed);
+        s.cfg.cut_first.store(cut, Ordering::Relaxed);
+        s.cfg.no_length.store(no_length, Ordering::Relaxed);
+        let e = env(name);
+        let id = add(&e, &s.url);
+        let (st, msg) = wait(&e, id, 60);
+        assert_eq!(st, Status::Completed, "{name}: {msg}");
+        assert_not_locked(&e, id);
+    }
+}

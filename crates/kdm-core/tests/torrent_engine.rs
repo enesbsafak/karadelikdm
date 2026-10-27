@@ -74,7 +74,7 @@ struct Env {
     rx: mpsc::Receiver<(u64, Status, String)>,
 }
 
-fn env(name: &str, peers: Vec<SocketAddr>, seed_ratio: f64) -> Env {
+fn env(name: &str, peers: Vec<SocketAddr>, seed_after: bool) -> Env {
     let data = temp(&format!("{name}-data"));
     let out = temp(&format!("{name}-out"));
     let (tx, rx) = mpsc::channel();
@@ -85,7 +85,8 @@ fn env(name: &str, peers: Vec<SocketAddr>, seed_ratio: f64) -> Env {
             dht: false,
             upnp: false,
             lsd: false,
-            seed_ratio,
+            seed_after,
+            seed_ratio: 0.0,
             upload_limit: 0,
             initial_peers: peers,
             web_seed_now: false,
@@ -111,7 +112,7 @@ fn magnet_download_through_engine() {
     let d = data(2 * 1024 * 1024 + 77, 3);
     std::fs::write(&file, &d).unwrap();
     let s = seed(&file, "video.mkv");
-    let e = env("mag", vec![s.addr], 0.0);
+    let e = env("mag", vec![s.addr], false);
     let magnet = format!("magnet:?xt=urn:btih:{}&dn=video.mkv", s.hash.to_uppercase());
     let id = e.engine.add(NewDownload { url: magnet, start: true, ..Default::default() }, e.out.clone(), "").unwrap();
     let (st, msg) = wait(&e, id);
@@ -147,7 +148,7 @@ fn torrent_file_with_selection_existing_name_and_resume() {
     std::fs::write(album.join("a.bin"), &a).unwrap();
     std::fs::write(album.join("ek").join("b.bin"), &b).unwrap();
     let s = seed(&album, "album");
-    let e = env("sel", vec![s.addr], 0.0);
+    let e = env("sel", vec![s.addr], false);
     // Hedefte aynı adlı (başka) bir klasör var: üstüne yazılmaz
     std::fs::create_dir_all(e.out.join("album")).unwrap();
     std::fs::write(e.out.join("album").join("a.bin"), b"kullanicinin dosyasi").unwrap();
@@ -194,7 +195,7 @@ fn stopped_magnet_without_peers_returns_quickly() {
             }
         });
     }
-    let e = env("stop", vec![silent_addr], 0.0);
+    let e = env("stop", vec![silent_addr], false);
     let magnet = "magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567&dn=yok";
     let id = e.engine.add(NewDownload { url: magnet.into(), start: true, ..Default::default() }, e.out.clone(), "").unwrap();
     std::thread::sleep(Duration::from_millis(800));
@@ -209,30 +210,97 @@ fn stopped_magnet_without_peers_returns_quickly() {
     e.engine.shutdown(Duration::from_secs(5));
 }
 
+/// Paylaşılırken librqbit dosyayı yazma kipinde açık tutar: Windows'ta paylaşımsız açılamaz (kurulum programı
+/// "dosya kullanılıyor" der). Paylaşma bitince serbest kalmalı.
+fn locked(p: &Path) -> bool {
+    #[cfg(windows)]
+    {
+        use std::os::windows::fs::OpenOptionsExt;
+        std::fs::OpenOptions::new().read(true).write(true).share_mode(0).open(p).is_err()
+    }
+    #[cfg(not(windows))]
+    {
+        let _ = p;
+        false
+    }
+}
+
+fn wait_until(what: &str, mut f: impl FnMut() -> bool) {
+    let t = std::time::Instant::now();
+    while !f() {
+        assert!(t.elapsed() < Duration::from_secs(30), "zaman aşımı: {what}");
+        std::thread::sleep(Duration::from_millis(100));
+    }
+}
+
 #[test]
-fn seeding_stops_at_ratio() {
-    // Paylaşma: bizim indirdiğimizi ikinci bir istemci (seeder'ın yerine) bizden alabilmeli; burada yalnız oran
-    // 0 iken bitişte paylaşmanın durduğunu ve oran > 0 iken listede "paylaşılıyor" görüldüğünü denetleriz.
-    let src = temp("seed-src");
-    let file = src.join("f.bin");
-    std::fs::write(&file, data(256 * 1024, 9)).unwrap();
-    let s = seed(&file, "f.bin");
-    let e = env("seed", vec![s.addr], 5.0);
+fn completed_torrent_is_not_seeded_or_locked_by_default() {
+    let src = temp("noseed-src");
+    let file = src.join("setup.exe");
+    std::fs::write(&file, data(300 * 1024, 4)).unwrap();
+    let s = seed(&file, "setup.exe");
+    let e = env("noseed", vec![s.addr], false);
     let id = e
         .engine
         .add(NewDownload { url: format!("magnet:?xt=urn:btih:{}", s.hash), start: true, ..Default::default() }, e.out.clone(), "")
         .unwrap();
     let (st, msg) = wait(&e, id);
     assert_eq!(st, Status::Completed, "{msg}");
-    assert!(e.engine.info(id).unwrap().torrent.unwrap().seeding);
-    // Oran 0 yapılınca bir sonraki denetimde paylaşma durur
-    let mut set = EngineSettings::default();
-    set.torrent.seed_ratio = 0.0;
-    set.torrent.dht = false;
-    set.torrent.lsd = false;
-    e.engine.set_settings(set);
-    std::thread::sleep(Duration::from_millis(1500));
     assert!(!e.engine.info(id).unwrap().torrent.unwrap().seeding);
+    assert!(!locked(&e.engine.record(id).unwrap().target_path()), "bitmiş dosya kilitli");
+    e.engine.shutdown(Duration::from_secs(5));
+}
+
+#[test]
+fn seeding_can_be_stopped_and_restarted() {
+    let src = temp("seed-src");
+    let file = src.join("f.bin");
+    let d = data(256 * 1024, 9);
+    std::fs::write(&file, &d).unwrap();
+    let s = seed(&file, "f.bin");
+    let e = env("seed", vec![s.addr], true);
+    let id = e
+        .engine
+        .add(NewDownload { url: format!("magnet:?xt=urn:btih:{}", s.hash), start: true, ..Default::default() }, e.out.clone(), "")
+        .unwrap();
+    let (st, msg) = wait(&e, id);
+    assert_eq!(st, Status::Completed, "{msg}");
+    let target = e.engine.record(id).unwrap().target_path();
+    let seeding = |e: &Env| e.engine.info(id).unwrap().torrent.unwrap().seeding;
+    assert!(seeding(&e));
+    if cfg!(windows) {
+        assert!(locked(&target), "paylaşılırken dosyanın açık tutulması beklenirdi (sınamanın varsayımı)");
+    }
+    // Durdur: dosya serbest
+    e.engine.stop(id);
+    assert!(!seeding(&e));
+    assert!(!locked(&target), "paylaşma durunca dosya serbest kalmalı");
+    assert_eq!(e.engine.record(id).unwrap().status, Status::Completed);
+    // Yeniden paylaş: diskteki veri doğrulanır, indirme olmaz
+    e.engine.seed(id).unwrap();
+    wait_until("yeniden paylaşma", || seeding(&e));
+    assert_eq!(std::fs::read(&target).unwrap(), d);
+    e.engine.stop(id);
+    // Değişmiş dosya paylaşılmaz ve yeniden indirilmez
+    std::fs::write(&target, b"degisti").unwrap();
+    e.engine.seed(id).unwrap();
+    wait_until("hata bildirimi", || !e.engine.info(id).unwrap().error.is_empty());
+    assert!(!seeding(&e));
+    assert!(e.engine.info(id).unwrap().error.contains("Paylaşılamadı"));
+    assert_eq!(std::fs::read(&target).unwrap(), b"degisti");
+    // Aynı boyutta ama bozuk içerik: librqbit doğrulaması yakalar
+    let mut bad = d.clone();
+    bad[1000] ^= 0xff;
+    std::fs::write(&target, &bad).unwrap();
+    e.engine.seed(id).unwrap();
+    wait_until("doğrulama", || {
+        let i = e.engine.info(id).unwrap();
+        let t = i.torrent.unwrap();
+        t.seeding || (!t.checking && !i.error.is_empty())
+    });
+    assert!(!seeding(&e), "bozuk dosya paylaşılmamalı");
+    std::thread::sleep(Duration::from_millis(500));
+    assert_eq!(std::fs::read(&target).unwrap(), bad, "bozuk dosya sessizce yeniden indirilmemeli");
     e.engine.shutdown(Duration::from_secs(5));
 }
 
@@ -299,9 +367,9 @@ fn web_seed_env(name: &str) -> (Env, Vec<u8>, PathBuf, Vec<u8>, Vec<u8>) {
     std::fs::write(album.join("ek").join("b c.bin"), &b).unwrap();
     // Paylaşıcı yalnız .torrent üretmek için; adresi motora verilmez (eş yok)
     let s = seed(&album, "album");
-    let e = env(name, vec![], 0.0);
+    let e = env(name, vec![], false);
     e.engine.set_settings(EngineSettings {
-        torrent: TorrentSettings { dht: false, lsd: false, seed_ratio: 0.0, web_seed_now: true, ..Default::default() },
+        torrent: TorrentSettings { dht: false, lsd: false, web_seed_now: true, ..Default::default() },
         ..Default::default()
     });
     (e, s.torrent, src, a, b)

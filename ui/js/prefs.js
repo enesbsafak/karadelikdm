@@ -31,6 +31,7 @@ function fill() {
   $('t_dht').checked = t.dht;
   $('t_lsd').checked = t.lsd;
   $('t_upnp').checked = t.upnp;
+  $('t_seed_after').checked = t.seed_after;
   $('t_ratio').value = t.seed_ratio;
   $('t_upload_kb').value = Math.round(t.upload_limit / 1024);
   $('dataDir').textContent = TF('prefs.data_dir', meta.data_dir);
@@ -62,6 +63,7 @@ function collect() {
     dht: $('t_dht').checked,
     lsd: $('t_lsd').checked,
     upnp: $('t_upnp').checked,
+    seed_after: $('t_seed_after').checked,
     seed_ratio: Math.min(100, Math.max(0, Number($('t_ratio').value) || 0)),
     upload_limit: Math.max(0, Math.round(Number($('t_upload_kb').value) || 0)) * 1024,
   };

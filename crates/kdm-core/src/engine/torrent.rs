@@ -39,7 +39,10 @@ pub struct TorrentSettings {
     pub upnp: bool,
     /// Yerel ağda eş arama
     pub lsd: bool,
-    /// Bitince gönderilen / boyut bu orana ulaşana kadar paylaşılır; 0: bitince hemen durur
+    /// Bitince kendiliğinden paylaşılsın mı. Kapalıyken torrent bitince oturumdan çıkar; kullanıcı isterse
+    /// satırdan "Paylaş" ile başlatır. Paylaşılırken dosyalar açık tutulur (kurulum programı çalıştırılamaz).
+    pub seed_after: bool,
+    /// Paylaşma, gönderilen / boyut bu orana ulaşınca durur; 0: kullanıcı durdurana kadar
     pub seed_ratio: f64,
     /// bayt/sn, 0: sınırsız
     pub upload_limit: u64,
@@ -55,7 +58,7 @@ pub struct TorrentSettings {
 
 impl Default for TorrentSettings {
     fn default() -> Self {
-        TorrentSettings { listen_port: 0, dht: true, upnp: false, lsd: true, seed_ratio: 1.0, upload_limit: 0, initial_peers: Vec::new(), web_seed_now: false }
+        TorrentSettings { listen_port: 0, dht: true, upnp: false, lsd: true, seed_after: false, seed_ratio: 1.0, upload_limit: 0, initial_peers: Vec::new(), web_seed_now: false }
     }
 }
 
@@ -230,8 +233,7 @@ pub(crate) fn run(inner: &Arc<Inner>, task: &Arc<Task>, spec: TorrentSpec) -> Re
             return Err(anyhow!(p.error.unwrap_or_else(|| "torrent hatası".into())));
         }
         if p.finished && p.state == State::Live {
-            let ratio = inner.settings.read().torrent.seed_ratio;
-            if ratio > 0.0 {
+            if inner.settings.read().torrent.seed_after {
                 inner.seed(task.id, hash.clone(), p.total);
             } else {
                 // Oturumdan çıkarılır: librqbit dosyaları yazma kipinde açık tutar, Gezgin kopyalayamaz
@@ -371,6 +373,49 @@ fn web_seed(
         }
     }
     task.speed.store(0, Ordering::Relaxed);
+    Ok(())
+}
+
+/// Bitmiş bir torrenti yeniden paylaşır: dosyalar diskte doğrulanır, eksik ya da değişmişse hiçbir şey
+/// indirilmez (yoksa paylaşma sessizce yeniden indirmeye dönerdi).
+pub(crate) fn reseed(inner: &Arc<Inner>, task: &Arc<Task>) -> Result<()> {
+    let (spec, out) = {
+        let st = task.state.lock();
+        let spec = st.rec.torrent.clone().ok_or_else(|| anyhow!("torrent değil"))?;
+        let out = out_dir(&st.rec.dir, &st.rec.file_name, &spec);
+        (spec, out)
+    };
+    let bytes = std::fs::read(cache_path(inner, &spec.info_hash)).map_err(|_| anyhow!("torrent bilgisi bulunamadı"))?;
+    let meta = kdm_torrent::parse_torrent(&bytes)?;
+    // Önce boyut denetimi: dosya yoksa librqbit onu boş olarak oluşturup indirmeye başlardı
+    for (i, f) in meta.files.iter().enumerate() {
+        if f.padding || spec.files.as_ref().is_some_and(|s| !s.contains(&i)) {
+            continue;
+        }
+        let p = if meta.multi_file { out.join(&f.path) } else { out.join(&meta.files[0].path) };
+        if std::fs::metadata(&p).map(|m| m.len()).ok() != Some(f.size) {
+            bail!("dosya eksik ya da değişmiş: {}", p.display());
+        }
+    }
+    let client = inner.torrent_client()?;
+    inner.apply_torrent_limits(&client);
+    let hash = spec.info_hash.clone();
+    let opts = |paused| AddOptions { only_files: spec.files.clone(), paused, ..Default::default() };
+    client.add(&bytes, &out, opts(true))?;
+    // Duraklatılmış eklenen torrent önce diskteki veriyi doğrular
+    let p = loop {
+        let Some(p) = client.progress(&hash) else { bail!("torrent oturumdan düştü") };
+        if p.state != State::Checking {
+            break p;
+        }
+        std::thread::sleep(Duration::from_millis(200));
+    };
+    if p.state == State::Error || p.done < p.total {
+        let _ = client.remove(&hash, false);
+        bail!("{}", p.error.unwrap_or_else(|| "dosyalar torrentle uyuşmuyor; paylaşmak için yeniden indirin".into()));
+    }
+    client.add(&bytes, &out, opts(false))?;
+    inner.seed(task.id, hash, p.total);
     Ok(())
 }
 

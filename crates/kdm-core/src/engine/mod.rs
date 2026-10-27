@@ -168,6 +168,20 @@ impl Inner {
         self.seeding.lock().remove(&id);
     }
 
+    /// Paylaşmayı bitirir: torrent oturumdan çıkar, dosyalar serbest kalır.
+    pub(crate) fn stop_seeding(&self, id: u64) -> bool {
+        let Some((hash, _)) = self.seeding.lock().remove(&id) else { return false };
+        if let Some(c) = self.torrent.lock().clone() {
+            let _ = c.remove(&hash, false);
+        }
+        if let Some(t) = self.tasks.read().get(&id) {
+            *t.torrent.lock() = torrent::Live::default();
+        }
+        self.save();
+        self.mark_changed();
+        true
+    }
+
     /// Paylaşılan torrentler: gönderilen baytı kayda işler, oran dolunca durdurur.
     fn tick_seeding(&self) {
         let list: Vec<(u64, String, u64)> = self.seeding.lock().iter().map(|(id, (h, t))| (*id, h.clone(), *t)).collect();
@@ -191,14 +205,8 @@ impl Inner {
                 l.peers = p.peers;
                 l.seen = p.seen;
             }
-            if ratio <= 0.0 || p.uploaded as f64 >= ratio * total.max(1) as f64 {
-                // Oturumdan çıkarılır; dosyalar serbest kalır
-                let _ = c.remove(&hash, false);
-                self.unseed(id);
-                if let Some(t) = &task {
-                    *t.torrent.lock() = torrent::Live::default();
-                }
-                self.save();
+            if ratio > 0.0 && p.uploaded as f64 >= ratio * total.max(1) as f64 {
+                self.stop_seeding(id);
             }
             self.mark_changed();
         }
@@ -601,6 +609,9 @@ impl Engine {
     }
 
     pub fn stop(&self, id: u64) {
+        if self.inner.stop_seeding(id) {
+            return;
+        }
         if let Some(t) = self.task(id) {
             if t.running.load(Ordering::Acquire) {
                 t.stop.store(true, Ordering::Relaxed);
@@ -613,6 +624,39 @@ impl Engine {
                 self.inner.mark_changed();
             }
         }
+    }
+
+    /// Bitmiş torrenti paylaşmaya başlar (arka planda; dosyalar önce doğrulanır). Sonuç satırda görünür.
+    pub fn seed(&self, id: u64) -> Result<()> {
+        let Some(t) = self.task(id) else { bail!("indirme bulunamadı") };
+        {
+            let st = t.state.lock();
+            if st.rec.torrent.is_none() || st.rec.status != Status::Completed {
+                bail!("yalnız bitmiş torrent paylaşılabilir");
+            }
+        }
+        if self.inner.seeding.lock().contains_key(&id) || t.running.load(Ordering::Acquire) {
+            return Ok(());
+        }
+        {
+            let mut l = t.torrent.lock();
+            if l.checking {
+                return Ok(());
+            }
+            l.checking = true;
+        }
+        t.state.lock().notice = None;
+        self.inner.mark_changed();
+        let inner = self.inner.clone();
+        std::thread::spawn(move || {
+            let r = torrent::reseed(&inner, &t);
+            t.torrent.lock().checking = false;
+            if let Err(e) = r {
+                t.state.lock().notice = Some(format!("Paylaşılamadı: {e:#}"));
+            }
+            inner.mark_changed();
+        });
+        Ok(())
     }
 
     pub fn is_running(&self, id: u64) -> bool {

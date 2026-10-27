@@ -298,13 +298,13 @@
   "prefs.t_upnp": "Yönlendiricide portu otomatik aç (UPnP)",
   "prefs.t_upnp_hint": "Kapalıyken de indirilir; açmak gelen bağlantıları artırır ama yönlendiricide kendiliğinden port açar.",
   "prefs.t_ratio": "Paylaşma oranı",
-  "prefs.t_ratio_hint": "Bitince, gönderilen / boyut bu orana ulaşana kadar paylaşılır; sonra dosyalar serbest bırakılır.",
+  "prefs.t_ratio_hint": "Gönderilen / boyut bu orana ulaşınca paylaşma durur ve dosyalar serbest bırakılır.",
   "prefs.t_upload": "Gönderme sınırı",
   "prefs.t_upload_hint": "KB/s, 0: sınırsız",
   "prefs.t_register": "Magnet ve .torrent için varsayılan yap",
   "prefs.t_registered": "Kaydedildi. Tarayıcı ilk magnet bağlantısında izin isteyebilir.",
   "prefs.t_note": "Port, DHT, UPnP ve yerel ağ ayarları uygulama yeniden başlayınca geçerli olur. Torrentte IP adresiniz bağlandığınız eşlere görünür. Torrent oturumu ilk torrent başlatılana kadar açılmaz.",
-  "prefs.t_ratio_short": "0: paylaşma",
+  "prefs.t_ratio_short": "0: siz durdurana kadar",
   "row.peers": "{0} eş",
   "row.left": "{0} kaldı",
   "det.peers_label": "Eşler",
@@ -337,5 +337,9 @@
   "tray.check_updates": "Güncellemeleri denetle",
   "msg.up_to_date": "Karadelik Download Manager güncel ({0}).",
   "msg.update_check_failed": "Güncelleme denetlenemedi: {0}",
-  "prefs.ext_store_note": "Mağaza sayfası tarayıcıda açıldı: \"Chrome'a ekle\"ye basın (Edge önce \"Diğer mağazalardan uzantılara izin ver\" ister). Daha önce elle kurduğunuz kopya varsa uzantılar sayfasından kaldırın; ikisi birden indirmeleri iki kez yakalar."
+  "prefs.ext_store_note": "Mağaza sayfası tarayıcıda açıldı: \"Chrome'a ekle\"ye basın (Edge önce \"Diğer mağazalardan uzantılara izin ver\" ister). Daha önce elle kurduğunuz kopya varsa uzantılar sayfasından kaldırın; ikisi birden indirmeleri iki kez yakalar.",
+  "ctx.seed": "Paylaş",
+  "ctx.seed_stop": "Paylaşmayı durdur",
+  "prefs.t_seed_after": "Torrent bitince paylaşmaya devam et",
+  "prefs.t_seed_hint": "Kapalıyken bitmiş torrenti satırdaki \"Paylaş\" ile siz başlatırsınız. Paylaşılırken dosyalar açık tutulur; kurulum programı gibi dosyaları çalıştırmak için önce paylaşmayı durdurun."
 }
