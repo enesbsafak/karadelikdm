@@ -261,12 +261,14 @@ fn accept_ranges_but_ignores_range_falls_back() {
 
 #[test]
 fn stop_and_resume_across_restart() {
-    let d = data(5 * 1024 * 1024);
+    // Sınır bağlantı başınadır: 8 bağlantı x 256 KB/sn x 1,5 sn ~ 3 MB, dosyanın yarısından az. (5 MB / 512 KB/sn /
+    // 2,5 sn ile hızlı makinede indirme durdurulmadan bitiyordu.)
+    let d = data(8 * 1024 * 1024);
     let s = server(d.clone());
-    s.cfg.throttle.store(512 * 1024, Ordering::Relaxed);
+    s.cfg.throttle.store(256 * 1024, Ordering::Relaxed);
     let e = env("resume");
     let id = add(&e, &s.url);
-    std::thread::sleep(Duration::from_millis(2500));
+    std::thread::sleep(Duration::from_millis(1500));
     e.engine.stop(id);
     let (st, _) = wait(&e, id, 30);
     assert_eq!(st, Status::Stopped);
