@@ -323,8 +323,8 @@ function renderDetails() {
   const actions = el('div', { class: 'insp-actions' }, el('button', { class: 'btn', type: 'button', onclick: () => act('folder') }, T('ctx.folder')));
   if (tor && d.status === 'completed') {
     actions.append(tor.seeding
-      ? el('button', { class: 'btn', type: 'button', onclick: () => act('stop') }, T('ctx.seed_stop'))
-      : el('button', { class: 'btn', type: 'button', disabled: tor.checking, onclick: () => act('seed') }, T('ctx.seed')));
+      ? el('button', { class: 'btn wide', type: 'button', onclick: () => act('stop') }, T('ctx.seed_stop'))
+      : el('button', { class: 'btn wide', type: 'button', disabled: tor.checking, onclick: () => act('seed') }, T('ctx.seed')));
   }
   if (d.status === 'completed') actions.append(el('button', { class: 'btn primary', type: 'button', onclick: () => act('open') }, T('ctx.open')));
   else if (d.status === 'downloading' || d.status === 'queued') actions.append(el('button', { class: 'btn primary', type: 'button', onclick: () => act('stop') }, T('ctx.stop')));

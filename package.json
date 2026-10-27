@@ -1,7 +1,7 @@
 {
   "name": "karadelikdm",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Karadelik Download Manager - Windows ve macOS için indirme yöneticisi",
   "scripts": {
     "dev": "tauri dev",
