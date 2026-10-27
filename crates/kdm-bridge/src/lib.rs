@@ -24,7 +24,10 @@ pub const HOST_NAME: &str = "dev.karadelik.dm";
 pub const CHROME_EXTENSION_ID: &str = "kkifckmmeinedmmdokgacefiojpfbpfl";
 /// Chrome Web Store ve Edge Eklentileri yayınlanınca kendi kimliklerini verir (paketteki `key` kabul edilmez).
 /// Mağazanın verdiği kimlikler buraya eklenir; native host ve köprü hepsine izin verir.
-pub const STORE_CHROME_IDS: &[&str] = &[];
+pub const STORE_CHROME_IDS: &[&str] = &[
+    // Chrome Web Store
+    "ajflkdfogcikaobkhalblmmahlpdbmee",
+];
 pub const FIREFOX_EXTENSION_ID: &str = "karadelik-dm@enesbsafak";
 /// Protokol sürümü; uyumsuz değişiklikte artar. `hello` yanıtında uzantıya gider.
 pub const PROTOCOL_VERSION: u32 = 1;

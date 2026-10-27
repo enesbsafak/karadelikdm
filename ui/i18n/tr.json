@@ -336,5 +336,6 @@
   "prefs.update_now": "Güncelle",
   "tray.check_updates": "Güncellemeleri denetle",
   "msg.up_to_date": "Karadelik Download Manager güncel ({0}).",
-  "msg.update_check_failed": "Güncelleme denetlenemedi: {0}"
+  "msg.update_check_failed": "Güncelleme denetlenemedi: {0}",
+  "prefs.ext_store_note": "Mağaza sayfası tarayıcıda açıldı: \"Chrome'a ekle\"ye basın (Edge önce \"Diğer mağazalardan uzantılara izin ver\" ister). Daha önce elle kurduğunuz kopya varsa uzantılar sayfasından kaldırın; ikisi birden indirmeleri iki kez yakalar."
 }

@@ -336,5 +336,6 @@
   "prefs.update_now": "Update",
   "tray.check_updates": "Check for updates",
   "msg.up_to_date": "Karadelik Download Manager is up to date ({0}).",
-  "msg.update_check_failed": "Could not check for updates: {0}"
+  "msg.update_check_failed": "Could not check for updates: {0}",
+  "prefs.ext_store_note": "The store page is open in the browser: click \"Add to Chrome\" (Edge first asks to \"Allow extensions from other stores\"). If you installed a copy by hand earlier, remove it on the extensions page; with both, downloads are caught twice."
 }

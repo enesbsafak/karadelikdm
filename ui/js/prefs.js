@@ -95,6 +95,8 @@ async function installExt(id) {
   $('error').classList.add('hidden');
   try {
     const r = await invoke('ext_install', { browser: id });
+    $('extStoreNote').classList.toggle('hidden', r.mode !== 'store');
+    if (r.mode === 'store') $('extSteps').classList.add('hidden');
     if (r.mode === 'manual') {
       $('extPage').textContent = r.page;
       $('extPath').textContent = r.path;

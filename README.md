@@ -106,15 +106,12 @@ address is visible to the peers and trackers you connect to while downloading a 
 
 1. Download and run `KaradelikDM-<version>-setup.exe` from the [releases](https://github.com/enesbsafak/karadelikdm/releases/latest)
    page. It installs per user and needs no administrator rights.
-2. Browser extension (submitted to the Chrome Web Store, Edge Add-ons and Firefox Add-ons; install it by hand until
-   it is approved):
-   - **Easiest:** in the app, Preferences > Browser > "Install extension". The extension folder is prepared, its path
-     is copied to the clipboard and the steps are shown; once connected it says "Connected".
-   - **Chrome / Edge, by hand:** unzip `karadelikdm-extension-chromium-unpacked.zip` from the release page,
-     `chrome://extensions` (Edge: `edge://extensions`) → Developer mode → "Load unpacked" → the `karadelikdm-chromium`
-     folder. Keep the folder; the browser runs the extension from it.
-   - **Firefox:** until store approval, temporarily only: `about:debugging` → "Load Temporary Add-on" →
+2. Browser extension:
+   - **Chrome / Edge:** [Chrome Web Store](https://chromewebstore.google.com/detail/karadelik-download-manage/ajflkdfogcikaobkhalblmmahlpdbmee), or in the app Preferences > Browser > "Add from store". Edge installs
+     it from the same page after "Allow extensions from other stores".
+   - **Firefox:** awaiting store approval. Until then, temporarily only: `about:debugging` → "Load Temporary Add-on" →
      `extension/firefox/manifest.json` built with `node extension/build.mjs`.
+   - If you installed the unpacked copy from an earlier release by hand, remove it after installing from the store.
 
    The extension finds the app through a helper (`karadelikdm-nmh.exe`) that the app registers with the browsers on first launch.
 

@@ -100,15 +100,12 @@ BitTorrent'in doğası gereği, torrent indirirken IP adresiniz bağlandığın�
 
 1. [Sürümler](https://github.com/enesbsafak/karadelikdm/releases/latest) sayfasından `KaradelikDM-<sürüm>-setup.exe`'yi indirip çalıştırın.
    Kurulum kullanıcı başınadır, yönetici izni gerekmez.
-2. Tarayıcı uzantısı (Chrome Web Store, Edge Eklentileri ve Firefox mağazalarına gönderilmek üzere; onaylanana
-   kadar elle kurulur):
-   - **En kolayı:** Uygulamada Tercihler > Tarayıcı > "Uzantıyı kur". Uzantı klasörü hazırlanır, yolu panoya
-     kopyalanır ve adımlar gösterilir; bağlanınca "Bağlı" yazar.
-   - **Chrome / Edge, elle:** Sürüm sayfasındaki `karadelikdm-extension-chromium-unpacked.zip`'i bir klasöre açın,
-     `chrome://extensions` (Edge'de `edge://extensions`) → Geliştirici modu → "Paketlenmemiş öğe yükle" →
-     `karadelikdm-chromium` klasörü. Klasörü silmeyin; tarayıcı uzantıyı oradan çalıştırır.
-   - **Firefox:** mağaza onayına kadar yalnız geçici olarak: `about:debugging` → "Geçici eklenti yükle" →
+2. Tarayıcı uzantısı:
+   - **Chrome / Edge:** [Chrome Web Store](https://chromewebstore.google.com/detail/karadelik-download-manage/ajflkdfogcikaobkhalblmmahlpdbmee) ya da uygulamada Tercihler > Tarayıcı > "Mağazadan ekle". Edge, aynı
+     sayfadan "Diğer mağazalardan uzantılara izin ver" dedikten sonra kurar.
+   - **Firefox:** mağaza onayı bekleniyor. O zamana kadar yalnız geçici olarak: `about:debugging` → "Geçici eklenti yükle" →
      kaynakta `node extension/build.mjs` ile üretilen `extension/firefox/manifest.json`.
+   - Önceki bir sürümden paketlenmemiş kopyayı elle kurduysanız, mağazadan kurduktan sonra onu kaldırın.
 
    Uzantı, uygulama ilk açıldığında tarayıcılara kaydedilen yardımcı programla (`karadelikdm-nmh.exe`) uygulamayı bulur.
 

@@ -11,8 +11,11 @@ use tauri::Manager;
 type Res<T> = Result<T, String>;
 
 /// Mağaza sayfaları; yayınlanınca doldurulur. `None`: elle (paketlenmemiş) kurulum.
-const CHROME_STORE: Option<&str> = None;
-const EDGE_STORE: Option<&str> = None;
+const CHROME_STORE: Option<&str> = Some(CWS_PAGE);
+/// Edge, Chrome Web Store'dan da kurar ("Diğer mağazalardan uzantılara izin ver" tek tık); kimlik aynıdır.
+/// Edge Eklentileri onaylanınca kendi sayfası yazılır.
+const EDGE_STORE: Option<&str> = Some(CWS_PAGE);
+const CWS_PAGE: &str = "https://chromewebstore.google.com/detail/karadelik-download-manage/ajflkdfogcikaobkhalblmmahlpdbmee";
 const FIREFOX_STORE: Option<&str> = None;
 
 struct Browser {
