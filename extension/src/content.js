@@ -1,4 +1,5 @@
-// Sayfadaki video oynatıcılarının üstünde "Bu videoyu indir" düğmesi. Düğme sayfadan yalıtılmış bir gölge
+// Sayfadaki video oynatıcılarının üstünde "Bu videoyu indir" düğmesi. Yalnız indirilecek bir şey varken çıkar:
+// sekmede ağdan yakalanmış medya ya da oynatıcının doğrudan (http) adresi. Düğme sayfadan yalıtılmış bir gölge
 // DOM'da çizilir; sayfanın stilleri ona, onunkiler sayfaya dokunmaz. Video adresleri ağdan yakalananlardır
 // (arka plan, sekme başına); oynatıcının doğrudan adresi de (blob: değilse) eklenir. Gönderme yalnız gerçek
 // kullanıcı tıklamasıyla olur: sayfanın ürettiği yapay olaylar (isTrusted=false) yok sayılır.
@@ -24,6 +25,9 @@
   let raf = 0;
   let host = null;
   let ui = null;
+  // Sekmede indirilebilir medya var mı (arka plana sık sorulmasın)
+  let avail = { at: 0, ok: false };
+  const AVAIL_TTL_MS = 1500;
 
   const send = (msg) => api.runtime.sendMessage(msg).catch((e) => ({ ok: false, error: e && e.message }));
 
@@ -164,6 +168,21 @@
     }, HIDE_DELAY_MS);
   }
 
+  async function downloadable(v) {
+    const src = v.currentSrc || v.src || '';
+    if (/^https?:/i.test(src)) return true;
+    if (Date.now() - avail.at < AVAIL_TTL_MS) return avail.ok;
+    avail.at = Date.now();
+    const r = await send({ cmd: 'vbList', src });
+    avail.ok = !!(r && r.items && r.items.length);
+    return avail.ok;
+  }
+
+  async function offer(v) {
+    if (target === v && ui && ui.wrap.classList.contains('show')) return show(v);
+    if (await downloadable(v)) show(v);
+  }
+
   // ------------------------------------------------------------ menü
 
   function closeMenu() {
@@ -282,7 +301,7 @@
           if (!hit || r.width * r.height < hit.r.width * hit.r.height) hit = { v, r };
         }
       }
-      if (hit) show(hit.v);
+      if (hit) offer(hit.v);
       else if (target) scheduleHide();
     },
     { passive: true, capture: true },
@@ -298,8 +317,17 @@
       const r = v.getBoundingClientRect();
       if (!visibleRect(v, r)) return;
       playUntil = Date.now() + SHOW_AFTER_PLAY_MS;
-      show(v);
-      scheduleHide();
+      // Akış adresi oynatma başladıktan biraz sonra yakalanır; birkaç kez denenir
+      for (const ms of [0, 1500, 3500]) {
+        setTimeout(async () => {
+          if (Date.now() > playUntil || (target === v && ui && ui.wrap.classList.contains('show'))) return;
+          avail.at = 0;
+          if (await downloadable(v)) {
+            show(v);
+            scheduleHide();
+          }
+        }, ms);
+      }
     },
     true,
   );

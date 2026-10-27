@@ -78,7 +78,7 @@
     "message": "Videoların üstünde indirme düğmesi"
   },
   "videoButtonHint": {
-    "message": "Fare videonun üstündeyken görünür"
+    "message": "İndirilebilir bir video varken, fare üstündeyken görünür"
   },
   "videoButtonSite": {
     "message": "Bu sitede video düğmesi"

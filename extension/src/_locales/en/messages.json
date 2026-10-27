@@ -78,7 +78,7 @@
     "message": "Download button on videos"
   },
   "videoButtonHint": {
-    "message": "Shown while the pointer is over a video"
+    "message": "Shown over a downloadable video while the pointer is on it"
   },
   "videoButtonSite": {
     "message": "Video button on this site"

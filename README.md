@@ -84,7 +84,7 @@ and browser integration in one window. No telemetry.
 - Takes over browser downloads together with cookies, referer and user agent.
 - Context menu: "Download with Karadelik", "Download all links with Karadelik".
 - Detects HLS/DASH and media streams on the page and lists them under the extension icon.
-- A "Download this video" button on videos: it appears in the player's top-right corner while the pointer is over it
+- A "Download this video" button on videos: when a downloadable video has been caught on the page, it appears in the player's top-right corner while the pointer is over it
   (and for a few seconds after playback starts); its menu lists the streams and files caught on that page. Turn it off
   in the extension window or with "Don't show the button on this site" in its menu.
 - Talks to the app over a local WebSocket. The connection is authenticated with a key that changes on every launch
