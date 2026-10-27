@@ -36,6 +36,13 @@ function render(s) {
   $('siteRow').classList.toggle('disabled', !s.host);
   $('host').textContent = s.host || t('noSite');
 
+  $('videoButton').checked = !!s.videoButton;
+  const vs = $('videoButtonSite');
+  vs.checked = !!s.videoButtonSite;
+  vs.disabled = !s.host || !s.videoButton;
+  $('vbSiteRow').classList.toggle('disabled', vs.disabled);
+  $('vbHost').textContent = s.host || t('noSite');
+
   renderMedia(s.media || []);
 }
 
@@ -88,6 +95,10 @@ async function init() {
   $('paused').addEventListener('change', (e) => send({ cmd: 'setPaused', value: e.target.checked }).then(() => refresh()));
   $('excluded').addEventListener('change', (e) =>
     send({ cmd: 'setExcluded', host: current && current.host, value: e.target.checked }).then(() => refresh()),
+  );
+  $('videoButton').addEventListener('change', (e) => send({ cmd: 'setVideoButton', value: e.target.checked }).then(() => refresh()));
+  $('videoButtonSite').addEventListener('change', (e) =>
+    send({ cmd: 'setVideoButtonSite', host: current && current.host, value: e.target.checked }).then(() => refresh()),
   );
   $('start').addEventListener('click', async (e) => {
     e.target.disabled = true;

@@ -78,6 +78,9 @@ Site Grabber, ZIP önizleme ve tarayıcı entegrasyonu tek pencerede. Telemetri 
 - İndirmeleri tarayıcıdan devralır; çerez, referer ve kullanıcı ajanı birlikte gelir.
 - Sağ tık menüsü: "Karadelik ile indir", "Tüm bağlantıları Karadelik ile indir".
 - Sayfadaki HLS/DASH ve medya akışlarını tespit eder, uzantı simgesinde listeler.
+- Videoların üstünde "Bu videoyu indir" düğmesi: fare oynatıcının üstündeyken (ve oynatma başlayınca birkaç saniye)
+  sağ üst köşede çıkar; menüsünde o sayfada yakalanan akışlar ve dosyalar listelenir. Uzantı penceresinden ya da
+  menüdeki "Bu sitede düğmeyi gösterme" ile kapatılır.
 - Uygulamayla yerel bir WebSocket üzerinden konuşur. Bağlantı her açılışta değişen bir anahtarla doğrulanır ve yalnızca
   uzantının kendi origin'inden kabul edilir; sıradan web sayfaları indirme enjekte edemez.
 

@@ -32,6 +32,7 @@ for (const name of ['setTimeout', 'setInterval']) {
 globalThis.chrome = {
   runtime: {
     id: 'test-ext',
+    getURL: (p) => `chrome-extension://test-ext/${p}`,
     getManifest: () => ({ version: '0.0.0' }),
     sendMessage: async () => {},
     onMessage: event('runtime.onMessage'),
@@ -109,4 +110,68 @@ test('sağ tık: magnet bağlantısı çerezsiz gönderilir', async () => {
   const req = sent.find((x) => x.url === m);
   assert.ok(req, 'magnet gönderilmedi');
   assert.equal(req.cookies, '');
+});
+
+const POPUP = { url: 'chrome-extension://test-ext/popup.html' };
+
+/** onMessage'ı tarayıcı gibi çağırır; yanıt yoksa (dinleyici false döndü) `null`. */
+function message(msg, sender) {
+  return new Promise((resolve) => {
+    const handled = listeners['runtime.onMessage'](msg, { id: 'test-ext', ...sender }, resolve);
+    if (handled !== true) resolve(null);
+  });
+}
+
+test('video düğmesi: yakalanan medya listelenir, gönderilir; site gizlenince kapanır', async () => {
+  const tab = { id: 5, url: 'https://video.site/izle/1', title: 'Film' };
+  listeners['webRequest.onHeadersReceived']({
+    tabId: 5, type: 'xmlhttprequest', statusCode: 200, url: 'https://cdn.video.site/hls/master.m3u8',
+    responseHeaders: [{ name: 'content-type', value: 'application/vnd.apple.mpegurl' }],
+  });
+  await new Promise((r) => setTimeout(r, 20));
+  assert.deepEqual(await message({ cmd: 'vbState' }, { tab }), { on: true });
+  const list = await message({ cmd: 'vbList', src: 'blob:https://video.site/abc' }, { tab });
+  assert.deepEqual(list.items.map((m) => [m.url, m.kind]), [['https://cdn.video.site/hls/master.m3u8', 'hls']]);
+
+  // Yakalanmış akış
+  assert.deepEqual(await message({ cmd: 'vbSend', url: 'https://cdn.video.site/hls/master.m3u8', kind: 'hls' }, { tab }), { ok: true });
+  const a = sent.find((m) => m.type === 'media' && m.url === 'https://cdn.video.site/hls/master.m3u8');
+  assert.ok(a, 'akış gönderilmedi');
+  assert.equal(a.kind, 'hls');
+  // Oynatıcının doğrudan adresi (ağdan yakalanmamış)
+  assert.deepEqual(await message({ cmd: 'vbSend', url: 'https://cdn.video.site/v.mp4', kind: 'file' }, { tab }), { ok: true });
+  const b = sent.find((m) => m.type === 'media' && m.url === 'https://cdn.video.site/v.mp4');
+  assert.ok(b, 'doğrudan adres gönderilmedi');
+  assert.equal(b.kind, 'file');
+  assert.equal(b.referer, tab.url);
+  assert.equal(b.title, 'Film');
+  // http(s) olmayan adres reddedilir
+  assert.equal((await message({ cmd: 'vbSend', url: 'file:///C:/gizli.txt', kind: 'file' }, { tab })).ok, false);
+
+  assert.deepEqual(await message({ cmd: 'vbHideSite' }, { tab }), { ok: true });
+  assert.deepEqual(await message({ cmd: 'vbState' }, { tab }), { on: false });
+  // Alt alan adındaki sayfa da (iframe değil, ayrı sekme) aynı sitede sayılır
+  assert.deepEqual(await message({ cmd: 'vbState' }, { tab: { id: 6, url: 'https://m.video.site/' } }), { on: false });
+  // Açılır pencereden geri açılır
+  await message({ cmd: 'setVideoButtonSite', host: 'video.site', value: true }, POPUP);
+  assert.deepEqual(await message({ cmd: 'vbState' }, { tab }), { on: true });
+  // Genel anahtar
+  await message({ cmd: 'setVideoButton', value: false }, POPUP);
+  assert.deepEqual(await message({ cmd: 'vbState' }, { tab }), { on: false });
+  await message({ cmd: 'setVideoButton', value: true }, POPUP);
+});
+
+test('içerik betiği açılır pencere komutlarını çalıştıramaz', async () => {
+  const tab = { id: 5, url: 'https://video.site/' };
+  assert.equal(await message({ cmd: 'setPaused', value: true }, { tab }), null);
+  assert.equal(await message({ cmd: 'sendMedia', tabId: 5, url: 'https://x/y.mp4' }, { tab }), null);
+  // Sekmede açılmış kendi sayfamız (açılır pencere) açılır pencere sayılır
+  assert.ok(await message({ cmd: 'state', tabId: -1, url: '' }, { ...POPUP, tab }));
+  // Sayfa adresi uzantı adresine benzese de içerik betiğidir
+  assert.equal(await message({ cmd: 'setPaused', value: true }, { tab, url: 'https://kotu.site/chrome-extension://test-ext/' }), null);
+  // Başka uzantı
+  assert.equal(await new Promise((resolve) => {
+    const handled = listeners['runtime.onMessage']({ cmd: 'vbState' }, { id: 'baska', tab }, resolve);
+    if (handled !== true) resolve(null);
+  }), null);
 });

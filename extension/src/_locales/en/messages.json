@@ -1,22 +1,89 @@
 {
-  "extName": { "message": "Karadelik Download Manager" },
-  "extDescription": { "message": "Hands browser downloads and media streams over to Karadelik Download Manager." },
-  "actionTitle": { "message": "Karadelik Download Manager" },
-  "menuDownload": { "message": "Download with Karadelik" },
-  "menuDownloadAll": { "message": "Download all links with Karadelik" },
-  "statusConnected": { "message": "Connected" },
-  "statusConnecting": { "message": "Connecting" },
-  "statusOffline": { "message": "App closed" },
-  "offlineHint": { "message": "Karadelik is not running. Downloads stay in the browser." },
-  "startApp": { "message": "Start" },
-  "captureDisabledInApp": { "message": "Browser capture is turned off in the app's preferences." },
-  "pauseCapture": { "message": "Pause capture" },
-  "pauseHint": { "message": "Until the browser is closed" },
-  "excludeSite": { "message": "Don't capture on this site" },
-  "noSite": { "message": "Not available on this page" },
-  "mediaTitle": { "message": "Media on this page" },
-  "mediaEmpty": { "message": "No video or audio found yet. Start playback, then open this window again." },
-  "kindFile": { "message": "file" },
-  "sent": { "message": "Sent" },
-  "sendFailed": { "message": "Failed" }
+  "extName": {
+    "message": "Karadelik Download Manager"
+  },
+  "extDescription": {
+    "message": "Hands browser downloads and media streams over to Karadelik Download Manager."
+  },
+  "actionTitle": {
+    "message": "Karadelik Download Manager"
+  },
+  "menuDownload": {
+    "message": "Download with Karadelik"
+  },
+  "menuDownloadAll": {
+    "message": "Download all links with Karadelik"
+  },
+  "statusConnected": {
+    "message": "Connected"
+  },
+  "statusConnecting": {
+    "message": "Connecting"
+  },
+  "statusOffline": {
+    "message": "App closed"
+  },
+  "offlineHint": {
+    "message": "Karadelik is not running. Downloads stay in the browser."
+  },
+  "startApp": {
+    "message": "Start"
+  },
+  "captureDisabledInApp": {
+    "message": "Browser capture is turned off in the app's preferences."
+  },
+  "pauseCapture": {
+    "message": "Pause capture"
+  },
+  "pauseHint": {
+    "message": "Until the browser is closed"
+  },
+  "excludeSite": {
+    "message": "Don't capture on this site"
+  },
+  "noSite": {
+    "message": "Not available on this page"
+  },
+  "mediaTitle": {
+    "message": "Media on this page"
+  },
+  "mediaEmpty": {
+    "message": "No video or audio found yet. Start playback, then open this window again."
+  },
+  "kindFile": {
+    "message": "file"
+  },
+  "sent": {
+    "message": "Sent"
+  },
+  "sendFailed": {
+    "message": "Failed"
+  },
+  "vbDownload": {
+    "message": "Download this video"
+  },
+  "vbClose": {
+    "message": "Hide for this video"
+  },
+  "vbLoading": {
+    "message": "Looking for videos…"
+  },
+  "vbNoMedia": {
+    "message": "This video's address has not been caught yet. Start playback and try again in a few seconds."
+  },
+  "vbHideSite": {
+    "message": "Don't show the button on this site"
+  },
+  "videoButton": {
+    "message": "Download button on videos"
+  },
+  "videoButtonHint": {
+    "message": "Shown while the pointer is over a video"
+  },
+  "videoButtonSite": {
+    "message": "Video button on this site"
+  },
+  "vbStreamHint": {
+    "message": "For streams (HLS/DASH) you choose the quality in the app. The first row usually contains every quality."
+  }
 }

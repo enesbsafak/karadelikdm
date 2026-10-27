@@ -100,11 +100,22 @@ fn dl_action_sync(ids: &[u64], action: &str) -> Res<()> {
     for &id in ids {
         match head {
             "start" => {
-                e.start(id);
+                let was_done = e.record(id).is_some_and(|r| r.status == Status::Completed);
+                if e.start(id) && ids.len() == 1 && !was_done {
+                    crate::progress::started(id);
+                }
+            }
+            "progress" => crate::progress::open(id),
+            "open_with" => {
+                let rec = e.record(id).ok_or("?")?;
+                open_with(&rec.target_path()).map_err(err)?;
             }
             "stop" => e.stop(id),
             "seed" => e.seed(id).map_err(err)?,
-            "remove" => e.remove(id, false).map_err(err)?,
+            "remove" => {
+                crate::progress::forget(id);
+                e.remove(id, false).map_err(err)?
+            }
             "restart" => {
                 e.stop(id);
                 wait_stopped(id);
@@ -145,6 +156,34 @@ fn dl_action_sync(ids: &[u64], action: &str) -> Res<()> {
         }
     }
     Ok(())
+}
+
+/// Windows "Birlikte aç" seçicisi. Yol tek argüman; kabuk kullanılmaz.
+fn open_with(path: &std::path::Path) -> std::io::Result<()> {
+    #[cfg(windows)]
+    {
+        let mut arg = std::ffi::OsString::from("shell32.dll,OpenAs_RunDLL ");
+        arg.push(path);
+        std::process::Command::new("rundll32.exe").arg(arg).spawn()?;
+    }
+    #[cfg(not(windows))]
+    {
+        // macOS'ta karşılığı yok: Finder'da gösterilir
+        std::process::Command::new("open").arg("-R").arg(path).spawn()?;
+    }
+    Ok(())
+}
+
+/// İlerleme penceresi kendi indirmesinin bilgisini alır (etiketten).
+#[tauri::command]
+pub fn progress_info(window: tauri::WebviewWindow) -> Option<Info> {
+    engine().info(crate::progress::id_of(window.label())?)
+}
+
+/// "Bu pencereyi bir daha gösterme"
+#[tauri::command]
+pub fn set_show_complete(value: bool) {
+    kcore::update_settings(|s| s.show_complete = value);
 }
 
 fn wait_stopped(id: u64) {
@@ -285,6 +324,8 @@ pub fn add_downloads(form: AddForm) -> Res<Vec<u64>> {
         let id = engine().add(nd, dir, &cat).map_err(err)?;
         if form.mode == "queue" {
             sched().enqueue(id, &queue);
+        } else if form.mode == "now" && urls.len() == 1 {
+            crate::progress::started(id);
         }
         ids.push(id);
     }

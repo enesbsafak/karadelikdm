@@ -41,6 +41,7 @@ impl Sink for AppSink {
         }
         let Some(rec) = c.engine.record(id) else { return };
         emit("finished", serde_json::json!({ "id": id, "status": status, "message": message }));
+        crate::progress::finished(id, status);
         let s = settings();
         match status {
             Status::Completed => {

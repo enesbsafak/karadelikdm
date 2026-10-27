@@ -2,7 +2,7 @@
 let meta = null;
 let s = null;
 
-const CHECKS = ['run_at_startup', 'start_minimized', 'close_to_tray', 'notify_complete', 'clipboard_monitor',
+const CHECKS = ['run_at_startup', 'start_minimized', 'close_to_tray', 'notify_complete', 'show_progress', 'show_complete', 'clipboard_monitor',
   'use_categories', 'speed_limit_enabled', 'browser_enabled', 'browser_show_dialog', 'av_enabled', 'update_check'];
 
 function fill() {

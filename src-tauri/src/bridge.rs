@@ -62,18 +62,29 @@ impl Handler for AppHandler {
                     return Err("unsupported address".into());
                 }
                 let stream = kind == "hls" || kind == "dash";
-                let file_name = kdm_core::engine::filename::sanitize(&title);
-                let file_name = match (stream, file_name.is_empty()) {
-                    (_, true) => String::new(),
-                    (true, false) => format!("{file_name}.mp4"),
-                    (false, false) => file_name,
-                };
+                let file_name = media_file_name(&title, &url, stream);
                 let spec = AddSpec { url, file_name, referer, cookies, user_agent, media: stream, ..Default::default() };
                 std::thread::spawn(move || windows::open_add(spec));
                 Ok(())
             }
             Request::Hello { .. } | Request::Ping => Ok(()),
         }
+    }
+}
+
+/// Sayfa başlığından dosya adı. Akış MP4'e birleştirilir; tek dosyada uzantı adresten gelir (başlıkta
+/// uzantı olmaz: "Film - Site" -> "Film - Site.webm").
+fn media_file_name(title: &str, url: &str, stream: bool) -> String {
+    use kdm_core::engine::filename;
+    let name = filename::sanitize(title);
+    if name.is_empty() {
+        return String::new();
+    }
+    let ext = if stream { "mp4".to_string() } else { filename::from_url(url).map(|n| filename::extension(&n)).unwrap_or_default() };
+    if ext.is_empty() || name.to_ascii_lowercase().ends_with(&format!(".{ext}")) {
+        name
+    } else {
+        format!("{name}.{ext}")
     }
 }
 
@@ -122,5 +133,20 @@ pub fn broadcast() {
 pub fn stop() {
     if let Some(s) = SERVER.lock().take() {
         s.stop();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::media_file_name;
+
+    #[test]
+    fn media_names_get_an_extension() {
+        assert_eq!(media_file_name("Film - Site", "https://a.com/v/klip.webm?x=1", false), "Film - Site.webm");
+        assert_eq!(media_file_name("Film - Site", "https://a.com/master.m3u8", true), "Film - Site.mp4");
+        assert_eq!(media_file_name("klip.webm", "https://a.com/klip.webm", false), "klip.webm");
+        // Adreste uzantı yoksa başlık olduğu gibi (tür uygulamada yanıttan anlaşılır)
+        assert_eq!(media_file_name("Film", "https://a.com/izle?id=5", false), "Film");
+        assert_eq!(media_file_name("", "https://a.com/klip.mp4", false), "");
     }
 }

@@ -77,6 +77,7 @@ installed on the user's computer.
 | `storage` | Keeps the extension's own settings: excluded sites, paused state, the last capture settings received from the app. |
 | `activeTab` | Acts on the tab the user is interacting with from the extension window and the context menu. |
 | Host permission `<all_urls>` | Downloads and media can come from any site; reading the download's cookies and observing media responses requires access to that site. |
+| Content script (`content.js`, http/https pages) | Draws the "Download this video" button over video players. It only measures video elements on the page and shows the button; it reads no page content, sends nothing anywhere, and acts only on the user's click. The user can turn it off globally or per site. |
 
 **Uzak kod:** Yok. Bütün kod pakettedir; uzantı yalnız 127.0.0.1 üzerindeki yerel uygulamaya bağlanır.
 

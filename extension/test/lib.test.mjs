@@ -178,3 +178,37 @@ test('isMagnet ve cleanLinks magnet bağlantılarını alır', () => {
   }
   assert.deepEqual(L.cleanLinks(['https://a.com/1.zip', m, m, 'magnet:?dn=bozuk']), ['https://a.com/1.zip', m]);
 });
+
+test('video düğmesi: küçük oynatıcıda çıkmaz', () => {
+  assert.equal(L.videoButtonFits(640, 360), true);
+  assert.equal(L.videoButtonFits(199, 360), false);
+  assert.equal(L.videoButtonFits(640, 100), false);
+});
+
+test('video düğmesi menüsü: akış, büyük video, ses; oynatıcı adresi eklenir', () => {
+  const media = [
+    { url: 'https://a.com/ses.m4a', kind: 'file', mime: 'audio/mp4', size: 9e6 },
+    { url: 'https://a.com/kucuk.mp4', kind: 'file', mime: 'video/mp4', size: 2e6 },
+    { url: 'https://a.com/master.m3u8', kind: 'hls', mime: '', size: null },
+    { url: 'https://a.com/buyuk.mp4', kind: 'file', mime: 'video/mp4', size: 8e7 },
+    { url: 'blob:https://a.com/x', kind: 'file', mime: 'video/mp4', size: 1 },
+  ];
+  assert.deepEqual(L.videoMenuItems(media).map((m) => m.url),
+    ['https://a.com/master.m3u8', 'https://a.com/buyuk.mp4', 'https://a.com/kucuk.mp4', 'https://a.com/ses.m4a']);
+  // Doğrudan oynatılan dosya: akışlardan sonra, dosyaların başına
+  const withSrc = L.videoMenuItems(media, 'https://cdn.a.com/oynatici.webm');
+  assert.equal(withSrc[1].url, 'https://cdn.a.com/oynatici.webm');
+  assert.equal(withSrc[1].kind, 'file');
+  // Listede olan adres tekrar eklenmez; blob: eklenmez
+  assert.equal(L.videoMenuItems(media, 'https://a.com/buyuk.mp4').length, 4);
+  assert.equal(L.videoMenuItems([], 'blob:https://a.com/1').length, 0);
+  // Oynatıcı bir HLS listesini doğrudan oynatıyorsa (Safari tarzı) akış sayılır
+  assert.deepEqual(L.videoMenuItems([], 'https://a.com/v/index.m3u8?t=1'), [{ url: 'https://a.com/v/index.m3u8?t=1', kind: 'hls', mime: '', size: null }]);
+  // Akışlar yüklenme sırasıyla: ana liste önce (sekme listesi en yeniyi başta tutar)
+  const hls = [
+    { url: 'https://a.com/720p.m3u8', kind: 'hls', ts: 3 },
+    { url: 'https://a.com/360p.m3u8', kind: 'hls', ts: 2 },
+    { url: 'https://a.com/master.m3u8', kind: 'hls', ts: 1 },
+  ];
+  assert.deepEqual(L.videoMenuItems(hls).map((m) => m.url), ['https://a.com/master.m3u8', 'https://a.com/360p.m3u8', 'https://a.com/720p.m3u8']);
+});

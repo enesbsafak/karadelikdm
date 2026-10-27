@@ -43,6 +43,10 @@ pub struct Settings {
     /// BitTorrent: port, DHT, paylaşma oranı
     pub torrent: TorrentSettings,
     pub update_check: bool,
+    /// Kullanıcının başlattığı indirmede ilerleme penceresi
+    pub show_progress: bool,
+    /// Bitince "İndirme tamamlandı" penceresi
+    pub show_complete: bool,
     pub first_run: bool,
 }
 
@@ -84,6 +88,8 @@ impl Default for Settings {
             ffmpeg_path: String::new(),
             torrent: TorrentSettings::default(),
             update_check: true,
+            show_progress: true,
+            show_complete: true,
             first_run: true,
         }
     }

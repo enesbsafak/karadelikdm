@@ -10,7 +10,8 @@
     "grabber",
     "zip-*",
     "dialog-*",
-    "media-*"
+    "media-*",
+    "progress-*"
   ],
   "permissions": [
     "core:default",

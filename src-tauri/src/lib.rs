@@ -8,6 +8,7 @@ mod commands;
 mod i18n;
 mod kcore;
 mod paths;
+mod progress;
 mod settings;
 mod system;
 mod extinstall;
@@ -59,6 +60,8 @@ pub fn run() {
             commands::get_state,
             commands::run_action,
             commands::dl_action,
+            commands::progress_info,
+            commands::set_show_complete,
             commands::reorder,
             commands::add_get,
             commands::add_submit,

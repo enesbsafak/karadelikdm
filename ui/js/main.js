@@ -392,7 +392,8 @@ function openItem(id) {
   const d = state.downloads.find((x) => x.id === id);
   if (!d) return;
   if (d.status === 'completed') act('open', [id]);
-  else if (d.status === 'downloading' || d.status === 'queued') act('stop', [id]);
+  else if (d.status === 'downloading') act('progress', [id]);
+  else if (d.status === 'queued') act('stop', [id]);
   else act('start', [id]);
 }
 
@@ -439,6 +440,7 @@ function showContextMenu(x, y) {
   const m = el('div', { class: 'ctx' },
     menuItem(T('ctx.open'), () => act('open'), { disabled: !(one && one.status === 'completed'), kbd: 'Enter' }),
     menuItem(T('ctx.folder'), () => act('folder'), { disabled: !one }),
+    menuItem(T('ctx.progress'), () => act('progress'), { disabled: !(one && one.status !== 'completed') }),
     sep(),
     menuItem(T('ctx.start'), () => act('start'), { disabled: !any((d) => d.status !== 'completed' && d.status !== 'downloading') }),
     menuItem(T('ctx.stop'), () => act('stop'), { disabled: !any((d) => d.status === 'downloading' || d.status === 'queued') }),

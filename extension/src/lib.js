@@ -230,3 +230,30 @@ export function formatSize(n) {
   }
   return `${v.toFixed(v >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
 }
+
+/** Video düğmesinin gösterileceği en küçük oynatıcı (küçük önizlemeler, reklam kutuları atlanır). */
+export const VIDEO_BUTTON_MIN = { w: 200, h: 110 };
+
+export function videoButtonFits(w, h) {
+  return w >= VIDEO_BUTTON_MIN.w && h >= VIDEO_BUTTON_MIN.h;
+}
+
+/**
+ * Sayfadaki video düğmesinin menüsü: önce akışlar, sonra büyükten küçüğe video dosyaları, en sonda ses.
+ * Akışlarda ilk yüklenen liste başa gelir: oynatıcı önce ana listeyi (tüm kaliteler) ister, kalite listelerini
+ * sonra. `src` oynatıcının doğrudan adresiyse (blob: değil) ve listede yoksa eklenir.
+ * Dönen öğe: { url, kind, mime, size }.
+ */
+export function videoMenuItems(media, src = '') {
+  const rank = (m) => (m.kind === 'hls' || m.kind === 'dash' ? 0 : String(m.mime || '').startsWith('audio/') ? 2 : 1);
+  const list = (media || [])
+    .filter((m) => m && isHttp(m.url))
+    .sort((a, b) => rank(a) - rank(b) || (rank(a) === 0 ? (a.ts || 0) - (b.ts || 0) : (b.size || 0) - (a.size || 0)))
+    .map((m) => ({ url: m.url, kind: m.kind, mime: m.mime || '', size: m.size ?? null }));
+  if (isHttp(src) && !list.some((m) => m.url === src)) {
+    const ext = extOf(fileNameFromUrl(src));
+    const kind = ext === 'm3u8' ? 'hls' : ext === 'mpd' ? 'dash' : 'file';
+    list.splice(kind === 'file' ? list.filter((m) => rank(m) === 0).length : 0, 0, { url: src, kind, mime: '', size: null });
+  }
+  return list;
+}

@@ -475,12 +475,65 @@ async function sendMedia(tabId, url) {
   );
 }
 
+// ---------------------------------------------------------------- sayfadaki video düğmesi (content.js)
+
+async function videoButtonPrefs() {
+  const { vbOff = false, vbHidden = [] } = await api.storage.local.get(['vbOff', 'vbHidden']);
+  return { vbOff, vbHidden };
+}
+
+async function setVideoButtonHidden(host, value) {
+  host = String(host || '').toLowerCase();
+  if (!host) return;
+  const { vbHidden } = await videoButtonPrefs();
+  const next = vbHidden.filter((h) => h !== host);
+  if (value) next.push(host);
+  await api.storage.local.set({ vbHidden: next });
+}
+
+/** Sekme adresi sitenin kendisidir (iframe'deki oynatıcı da o sitede sayılır). */
+async function onContent(msg, sender) {
+  const tab = sender.tab;
+  const site = tab.url || sender.url || '';
+  switch (msg.cmd) {
+    case 'vbState': {
+      const p = await videoButtonPrefs();
+      return { on: !p.vbOff && !L.isExcluded(site, p.vbHidden) };
+    }
+    case 'vbList':
+      await mediaReady;
+      return { items: L.videoMenuItems(media.get(tab.id) || [], String(msg.src || '')) };
+    case 'vbSend': {
+      await mediaReady;
+      const url = String(msg.url || '');
+      if ((media.get(tab.id) || []).some((m) => m.url === url)) {
+        await sendMedia(tab.id, url);
+      } else {
+        // Oynatıcının doğrudan adresi (henüz ağdan yakalanmamış)
+        if (!L.isHttp(url)) throw new Error('unsupported');
+        const kind = msg.kind === 'hls' || msg.kind === 'dash' ? msg.kind : 'file';
+        await request(
+          { type: 'media', url, kind, title: tab.title || '', referer: site, cookies: await cookiesFor(url), user_agent: navigator.userAgent },
+          { launch: true },
+        );
+      }
+      return { ok: true };
+    }
+    case 'vbHideSite':
+      await setVideoButtonHidden(L.hostOf(site), true);
+      return { ok: true };
+    default:
+      throw new Error('unknown');
+  }
+}
+
 // ---------------------------------------------------------------- açılır pencere
 
 async function popupState(tabId, url) {
   await mediaReady;
   const prefs = await getPrefs();
   const host = L.isHttp(url) ? L.hostOf(url) : '';
+  const vb = await videoButtonPrefs();
   return {
     status: state.status,
     config: state.config,
@@ -488,6 +541,8 @@ async function popupState(tabId, url) {
     host,
     excluded: host ? L.isExcluded(url, prefs.excluded) : false,
     media: media.get(tabId) || [],
+    videoButton: !vb.vbOff,
+    videoButtonSite: host ? !L.isExcluded(url, vb.vbHidden) : false,
   };
 }
 
@@ -514,15 +569,25 @@ async function onPopup(msg) {
     case 'sendMedia':
       await sendMedia(msg.tabId, msg.url);
       return { ok: true };
+    case 'setVideoButton':
+      await api.storage.local.set({ vbOff: !msg.value });
+      return { ok: true };
+    case 'setVideoButtonSite':
+      await setVideoButtonHidden(msg.host, !msg.value);
+      return { ok: true };
     default:
       throw new Error('unknown');
   }
 }
 
 api.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  // Yalnız kendi sayfalarımız (açılır pencere); içerik betiği kullanılmıyor
-  if (sender.id !== api.runtime.id || sender.tab || !msg || !msg.cmd) return false;
-  onPopup(msg).then(sendResponse, (e) => sendResponse({ ok: false, error: (e && e.message) || String(e) }));
+  if (sender.id !== api.runtime.id || !msg || !msg.cmd) return false;
+  // Kendi sayfamız (açılır pencere) adresinden tanınır; diğerleri sayfalara eklenen içerik betiğidir ve yalnız
+  // video düğmesi komutlarını çalıştırabilir.
+  const own = typeof sender.url === 'string' && sender.url.startsWith(api.runtime.getURL(''));
+  const handle = own ? onPopup(msg) : sender.tab && String(msg.cmd).startsWith('vb') ? onContent(msg, sender) : null;
+  if (!handle) return false;
+  handle.then(sendResponse, (e) => sendResponse({ ok: false, error: (e && e.message) || String(e) }));
   return true;
 });
 

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Karadelik Download Manager</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/dm.css">
+</head>
+<body data-esc-close="1">
+<div class="page">
+  <div class="content prog">
+    <div class="prog-head">
+      <div class="ftile" id="icon"></div>
+      <div class="prog-title">
+        <strong class="ellipsis" id="name"></strong>
+        <span class="muted ellipsis" id="sub"></span>
+      </div>
+    </div>
+
+    <!-- İndiriliyor / durdu / hata -->
+    <div id="running">
+      <div class="prog-bar"><div id="bar"></div></div>
+      <div class="prog-line"><span id="pct"></span><span class="muted" id="state"></span></div>
+      <dl class="kv prog-kv">
+        <dt data-i18n="prog.downloaded"></dt><dd id="done"></dd>
+        <dt data-i18n="det.speed"></dt><dd id="speed"></dd>
+        <dt data-i18n="prog.left"></dt><dd id="eta"></dd>
+        <dt data-i18n="prog.connections"></dt><dd id="conns"></dd>
+        <dt data-i18n="det.resume"></dt><dd id="resume"></dd>
+      </dl>
+      <div class="segbar hidden" id="segs" data-i18n-title="det.segments_hint"></div>
+      <div class="insp-err hidden" id="err"></div>
+    </div>
+
+    <!-- Bitti -->
+    <div class="hidden" id="done-view">
+      <div class="prog-done-msg" data-i18n="prog.complete"></div>
+      <dl class="kv prog-kv">
+        <dt data-i18n="prog.size"></dt><dd id="dSize"></dd>
+        <dt data-i18n="det.saved_to"></dt><dd class="ellipsis" id="dPath"></dd>
+      </dl>
+      <label class="check" style="margin:14px 0 0"><input type="checkbox" id="dontShow"><span data-i18n="prog.dont_show"></span></label>
+    </div>
+  </div>
+  <div class="footer">
+    <span class="note"></span>
+    <!-- İndirirken -->
+    <button class="btn" id="hide" data-i18n="prog.hide" data-i18n-title="prog.hide_hint"></button>
+    <button class="btn" id="cancel" data-i18n="prog.cancel"></button>
+    <button class="btn primary" id="pause" data-i18n="prog.pause"></button>
+    <!-- Bitince -->
+    <button class="btn hidden" id="folder" data-i18n="prog.open_folder"></button>
+    <button class="btn hidden" id="openWith" data-i18n="prog.open_with"></button>
+    <button class="btn hidden" id="close" data-i18n="btn.close"></button>
+    <button class="btn primary hidden" id="open" data-i18n="ctx.open"></button>
+  </div>
+</div>
+<script src="js/common.js"></script>
+<script src="js/progress.js"></script>
+</body>
+</html>
