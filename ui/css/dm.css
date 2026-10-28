@@ -201,7 +201,12 @@ html.mac .sidebar { background: rgba(13, 14, 15, .88); backdrop-filter: blur(20p
 .seg button:hover { color: var(--text); }
 .seg button.on { background: var(--surface-3); border-color: var(--line); color: var(--text); font-weight: 500; box-shadow: none; }
 .sortbox { display: flex; align-items: center; gap: 4px; }
-.sortbox .field.mini { background: transparent; border-color: transparent; color: var(--muted); }
+.sortbox .field.mini {
+  appearance: none; -webkit-appearance: none; field-sizing: content; padding-right: 22px; background: transparent no-repeat right 7px center / 10px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' fill='none' stroke='%238a8f98' stroke-width='1.5'%3E%3Cpath d='M2 3.5l3 3 3-3'/%3E%3C/svg%3E");
+  border-color: transparent; color: var(--muted);
+}
+.sortbox .field.mini option { background: var(--surface-3); color: var(--text); }
 .sortbox .field.mini:hover { border-color: var(--line); color: var(--text); }
 
 /* Liste: kartsız, çizgilerle ayrılmış tablo satırları */
