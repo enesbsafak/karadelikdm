@@ -129,7 +129,8 @@ function listTitle() {
 }
 
 function renderHead() {
-  $('listTitle').textContent = listTitle();
+  const n = visible().length;
+  $('listTitle').replaceChildren(listTitle(), el('span', { class: 'n' }, String(n)));
   document.querySelectorAll('#viewSeg [data-view]').forEach((b) => {
     const on = b.dataset.view === view;
     b.classList.toggle('on', on);
@@ -224,6 +225,7 @@ function renderList() {
   }
   for (const id of [...selection]) if (!state.downloads.some((d) => d.id === id)) selection.delete(id);
   $('emptyList').classList.toggle('hidden', state.downloads.length > 0);
+  $('listCols').classList.toggle('hidden', state.downloads.length === 0);
   renderHead();
 }
 
@@ -258,14 +260,6 @@ function onRowClick(e, id) {
 const selected = () => state.downloads.filter((d) => selection.has(d.id));
 
 // ---------- ayrıntılar (sağ panel) ----------
-function ring(p, status) {
-  const r = 31;
-  const c = 2 * Math.PI * r;
-  const color = status === 'completed' ? 'var(--ok)' : status === 'error' ? 'var(--err)' : 'var(--accent)';
-  return `<svg viewBox="0 0 72 72" width="72" height="72" aria-hidden="true"><circle cx="36" cy="36" r="${r}" fill="none" stroke="var(--line)" stroke-width="6"/>`
-    + `<circle cx="36" cy="36" r="${r}" fill="none" stroke="${color}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${(c * p).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 36 36)"/></svg>`;
-}
-
 function kindText(d) {
   if (d.torrent) return 'BitTorrent';
   if (d.media) return 'HLS / DASH';
@@ -286,15 +280,19 @@ function renderDetails() {
   const q = state.queues.find((x) => x.id === d.queue);
   const sep = IS_MAC ? '/' : '\\';
 
-  const ringBox = el('div', { class: 'ring' }, el('div', { html: ring(p, d.status) }), el('span', {}, `${Math.round(p * 100)}%`));
+  const bar = el('div', { class: `pbar ${d.status}` }, el('div', { style: `width:${(p * 100).toFixed(1)}%` }));
+  const prog = el('div', { class: 'insp-prog' },
+    el('div', { class: 'pct' }, el('b', {}, `${Math.round(p * 100)}%`), el('span', {}, d.size ? fmtSize(d.size) : '')),
+    bar,
+  );
   const head = el('div', { class: 'insp-head' },
-    ringBox,
-    el('strong', { title: d.file_name }, d.file_name),
     el('span', { class: 'kind' }, [kindText(d), statusText(d)].filter(Boolean).join(' · ')),
+    el('strong', { title: d.file_name }, d.file_name),
+    prog,
   );
 
   const rows = [];
-  const kv = (k, v, opts = {}) => { rows.push(el('dt', {}, k), el('dd', opts, v)); };
+  const kv = (k, v, opts = { class: 'num' }) => { rows.push(el('dt', {}, k), el('dd', opts, v)); };
   kv(T('det.size'), d.parts && d.parts[1] ? `${fmtSize(d.done)} · ${TF('det.stream_parts', d.parts[0], d.parts[1])}` : `${fmtSize(d.done)} / ${fmtSize(d.size)}`);
   if (tor) {
     kv(T('det.speed'), d.status === 'downloading' || tor.seeding ? `↓ ${fmtSpeed(d.speed) || '0 B/s'} · ↑ ${fmtSpeed(tor.upload_speed) || '0 B/s'}` : '—');
@@ -304,8 +302,8 @@ function renderDetails() {
     kv(T('det.speed'), d.status === 'downloading' ? `${fmtSpeed(d.speed) || '0 B/s'} · ${TF('det.connections', d.connections)}` : '—');
   }
   if (d.status === 'downloading' && d.eta != null) kv(T('col.eta'), fmtEta(d.eta));
-  kv(T('det.resume'), range);
-  kv(T('det.queue'), q ? q.name : '—');
+  kv(T('det.resume'), range, {});
+  kv(T('det.queue'), q ? q.name : '—', {});
   kv(T('det.saved_to'), `${d.dir}${sep}${d.file_name}`, { title: `${d.dir}${sep}${d.file_name}`, class: 'path' });
   kv(T('det.url'), d.url, { title: d.url, class: 'path' });
   if (tor) kv(T('det.info_hash'), tor.info_hash, { class: 'mono' });
@@ -481,6 +479,7 @@ window.onI18n = () => {
 document.addEventListener('DOMContentLoaded', async () => {
   document.querySelectorAll('[data-icon]').forEach((s) => { s.outerHTML = icon(s.dataset.icon); });
   $('prefsBtn').innerHTML = icon('settings');
+  if (IS_MAC) $('searchKey').textContent = '⌘F';
   $('aboutBtn').innerHTML = icon('help');
   await loadI18n();
   await refreshState();

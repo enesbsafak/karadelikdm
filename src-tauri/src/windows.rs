@@ -178,7 +178,7 @@ pub fn open_prefs() {
 /// İndirme ilerleme / tamamlandı penceresi (`crate::progress`). Her indirme için tek pencere.
 pub fn open_progress(label: &str, title: &str) {
     if !focus_existing(label) {
-        spawn_window(label.to_string(), "progress.html", title.to_string(), 460.0, 330.0, false, false);
+        spawn_window(label.to_string(), "progress.html", title.to_string(), 460.0, 372.0, false, false);
     }
 }
 

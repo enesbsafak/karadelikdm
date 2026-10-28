@@ -29,8 +29,9 @@
     <label class="search-pill">
       <span data-icon="search"></span>
       <input id="search" type="search" data-i18n-ph="ui.search" data-i18n-aria="ui.search" spellcheck="false">
+      <kbd id="searchKey">Ctrl F</kbd>
     </label>
-    <button class="add-btn" id="addBtn" data-i18n-title="tb.add" data-i18n-aria="tb.add"><span data-icon="add"></span></button>
+    <button class="add-btn" id="addBtn" data-i18n-title="tb.add"><span data-icon="add"></span><span data-i18n="tb.add">Ekle</span></button>
     <div class="title-tools">
       <button class="icon-btn" id="prefsBtn" data-i18n-title="ui.prefs" data-i18n-aria="ui.prefs"></button>
       <button class="icon-btn" id="aboutBtn" data-i18n-title="ui.about" data-i18n-aria="ui.about"></button>
@@ -69,6 +70,10 @@
         </div>
       </div>
       <div class="list" id="list">
+        <div class="list-cols" id="listCols" aria-hidden="true">
+          <span class="c-ico"></span><span class="c-name" data-i18n="col.name">Ad</span><span data-i18n="col.size">Boyut</span>
+          <span class="c-side" data-i18n="col.status">Durum</span><span class="c-act"></span>
+        </div>
         <div class="rows" id="rows"></div>
         <div class="empty-list hidden" id="emptyList">
           <img src="img/logo.png" width="64" alt="">

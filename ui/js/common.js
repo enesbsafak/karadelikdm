@@ -18,6 +18,8 @@ async function loadI18n() {
 }
 
 function applyI18n(root = document) {
+  // Büyük harfli etiketler (text-transform) dile göre çevrilir: Türkçede i → İ, İngilizcede i → I
+  if (I18N.lang) document.documentElement.lang = I18N.lang;
   root.querySelectorAll('[data-i18n]').forEach((e) => { e.textContent = T(e.dataset.i18n); });
   root.querySelectorAll('[data-i18n-title]').forEach((e) => { e.title = T(e.dataset.i18nTitle); });
   root.querySelectorAll('[data-i18n-ph]').forEach((e) => { e.placeholder = T(e.dataset.i18nPh); });

@@ -111,6 +111,7 @@
   "grab.stop": "Durdur",
   "grab.title": "Site Grabber",
   "grab.zero_unlimited": "0: sınırsız",
+  "lang": "tr",
   "limit.kbps": "Hız sınırı (KB/s)",
   "limit.title": "Özel hız sınırı",
   "msg.av_warning": "Antivirüs {0} için uyarı verdi.",

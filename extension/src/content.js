@@ -36,32 +36,34 @@
   const CSS = `
     :host { all: initial; }
     .wrap { position: fixed; z-index: 2147483647; display: none; flex-direction: column; align-items: flex-end; gap: 6px;
-      font: 500 13px/1.3 system-ui, -apple-system, "Segoe UI", sans-serif; color: #f4f2fa; pointer-events: auto; }
+      font: 500 13px/1.3 system-ui, -apple-system, "Segoe UI", sans-serif; color: #f7f8f8; pointer-events: auto; }
     .wrap.show { display: flex; }
-    .pill { display: flex; align-items: stretch; border-radius: 999px; overflow: hidden; background: rgba(22, 20, 30, .88);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 18px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(255, 255, 255, .1); }
+    .pill { display: flex; align-items: stretch; border-radius: 999px; overflow: hidden; background: rgba(12, 13, 14, .86);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 18px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(255, 255, 255, .12); }
     button { all: unset; cursor: pointer; box-sizing: border-box; }
     .dl { display: flex; align-items: center; gap: 7px; padding: 7px 12px 7px 9px; }
     .dl:hover, .x:hover { background: rgba(255, 255, 255, .08); }
-    .dl .ic { width: 18px; height: 18px; border-radius: 50%; background: #ff8a1f; display: grid; place-items: center; flex-shrink: 0; }
+    .dl .ic { width: 18px; height: 18px; border-radius: 50%; background: #e66f27; display: grid; place-items: center; flex-shrink: 0; }
     .dl .ic svg { width: 11px; height: 11px; }
-    .x { display: grid; place-items: center; width: 28px; color: #a9a6b8; border-left: 1px solid rgba(255, 255, 255, .1); font-size: 15px; }
-    .menu { display: none; min-width: 260px; max-width: 380px; max-height: 300px; overflow: auto; padding: 5px; border-radius: 12px;
-      background: rgba(22, 20, 30, .96); box-shadow: 0 10px 30px rgba(0, 0, 0, .5), inset 0 0 0 1px rgba(255, 255, 255, .1); }
+    .x { display: grid; place-items: center; width: 28px; color: #8a8f98; border-left: 1px solid rgba(255, 255, 255, .1); font-size: 15px; }
+    .x:hover { color: #f7f8f8; }
+    .menu { display: none; min-width: 260px; max-width: 380px; max-height: 300px; overflow: auto; padding: 5px; border-radius: 10px;
+      background: rgba(18, 19, 20, .97); box-shadow: 0 16px 40px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .1); }
     .menu.open { display: block; }
-    .item { display: flex; align-items: center; gap: 9px; width: 100%; padding: 7px 9px; border-radius: 8px; }
-    .item:hover { background: rgba(255, 138, 31, .16); }
-    .kind { flex-shrink: 0; min-width: 38px; padding: 2px 6px; border-radius: 5px; background: rgba(255, 255, 255, .08); color: #ffb36b;
-      font-size: 10.5px; font-weight: 700; text-transform: uppercase; text-align: center; }
+    .item { display: flex; align-items: center; gap: 9px; width: 100%; padding: 7px 9px; border-radius: 6px; color: #d0d6e0; }
+    .item:hover { background: rgba(255, 255, 255, .07); color: #f7f8f8; }
+    .kind { flex-shrink: 0; min-width: 38px; padding: 2px 6px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .12); color: #d0d6e0;
+      font: 500 10px/1.3 "JetBrains Mono", "Cascadia Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace; letter-spacing: .06em;
+      text-transform: uppercase; text-align: center; }
     .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .meta { flex-shrink: 0; color: #a9a6b8; font-size: 12px; font-variant-numeric: tabular-nums; }
-    .note { padding: 8px 9px; color: #c9c6d6; }
-    .note.small { padding: 4px 9px 6px; color: #a9a6b8; font-size: 11.5px; }
+    .meta { flex-shrink: 0; color: #8a8f98; font: 11px "JetBrains Mono", "Cascadia Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace; }
+    .note { padding: 8px 9px; color: #d0d6e0; }
+    .note.small { padding: 4px 9px 6px; color: #8a8f98; font-size: 11.5px; }
     .sep { height: 1px; margin: 4px 2px; background: rgba(255, 255, 255, .1); }
-    .foot { width: 100%; padding: 6px 9px; border-radius: 8px; color: #a9a6b8; font-size: 12px; }
-    .foot:hover { background: rgba(255, 255, 255, .06); color: #f4f2fa; }
-    .ok { color: #3ddc84; }
-    .bad { color: #ff8a8a; }
+    .foot { width: 100%; padding: 6px 9px; border-radius: 6px; color: #8a8f98; font-size: 12px; }
+    .foot:hover { background: rgba(255, 255, 255, .06); color: #f7f8f8; }
+    .ok { color: #4cb782; }
+    .bad { color: #f09a9a; }
   `;
   const ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="#1a0d00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v9M4 7.5l4 4 4-4"/></svg>';
 
